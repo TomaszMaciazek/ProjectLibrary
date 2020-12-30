@@ -21,7 +21,7 @@ namespace Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
+            builder.ApplyConfigurationsFromAssembly(typeof(LibraryDbContext).Assembly);
         }
     }
 }

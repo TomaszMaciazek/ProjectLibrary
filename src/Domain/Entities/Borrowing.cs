@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Identity;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -12,5 +13,6 @@ namespace Domain.Entities
         public DateTime? ReturnDate { get; set; }
         [Required]
         public int UserId { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

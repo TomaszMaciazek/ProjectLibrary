@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Domain.Common
+namespace Application.Common
 {
-    public abstract class AuditEntity : BaseEntity
+    public abstract class AuditDto : BaseDto
     {
         [Required]
         public DateTime CreationDate { get; set; }

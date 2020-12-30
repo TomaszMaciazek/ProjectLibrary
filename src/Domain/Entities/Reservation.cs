@@ -1,5 +1,5 @@
 ﻿using Domain.Common;
-using System;
+using Domain.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
@@ -11,5 +11,6 @@ namespace Domain.Entities
         public Book Book { get; set; }
         [Required]
         public int UserId { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

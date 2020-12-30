@@ -6,9 +6,10 @@ namespace Domain.Entities
 {
     public class Book : AuditEntity
     {
-        public int ReleaseYear { get; set; }
         [Required]
         public string Title { get; set; }
+        [Required]
+        public int YearOfRelease { get; set; }
         [Required]
         public int PublisherId { get; set; }
         public Publisher Publisher { get; set; }
