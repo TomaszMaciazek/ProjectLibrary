@@ -1,15 +1,12 @@
 ﻿using Domain.Entities;
+using Domain.Identity;
 using Domain.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Infrastructure.Persistence
 {
-    public class LibraryDbContext : IdentityDbContext<IdentityUser>, IDbContext
+    public class LibraryDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>, IDbContext
     {
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }
@@ -17,5 +14,14 @@ namespace Infrastructure.Persistence
         public DbSet<Borrowing> Borrowings { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
 
+        public LibraryDbContext(DbContextOptions<LibraryDbContext> options) : base(options)
+        {
+
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+        }
     }
 }
