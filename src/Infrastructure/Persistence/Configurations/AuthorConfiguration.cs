@@ -8,7 +8,8 @@ namespace Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Author> builder)
         {
-            builder.HasMany(a => a.Books).WithOne(ab => ab.Author).HasForeignKey(ab => ab.AuthorId);
+            builder.HasMany(a => a.Books).WithOne(ab => ab.Author)
+                .HasForeignKey(ab => ab.AuthorId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

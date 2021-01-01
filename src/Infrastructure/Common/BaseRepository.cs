@@ -1,9 +1,7 @@
 ﻿using Domain.Common;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Common
@@ -34,6 +32,12 @@ namespace Infrastructure.Common
             await SaveChangesAsync();
         }
 
+        public async Task Delete(int id)
+        {
+            var entity = DbSet.FirstOrDefault(x => x.Id == id);
+            DbSet.Remove(entity);
+            await SaveChangesAsync();
+        }
 
     }
 }

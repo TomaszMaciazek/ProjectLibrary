@@ -1,12 +1,13 @@
 ﻿using Domain.Entities;
+using Infrastructure.Common;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public interface IPublisherRepository
+    public interface IPublisherRepository : IRepository<Publisher>
     {
-        IEnumerable<Publisher> GetAllPublishers();
+        Task<ICollection<Publisher>> GetAllPublishers();
         Task<Publisher> GetPublisherById(int id);
     }
 }

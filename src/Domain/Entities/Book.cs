@@ -16,8 +16,9 @@ namespace Domain.Entities
         [Required]
         public int CategoryId { get; set; }
         public Category Category { get; set; }
-        public IEnumerable<AuthorAndBook> Authors { get; set; }
-        public IEnumerable<Borrowing> Borrowings { get; set; }
-        public IEnumerable<Reservation> Reservations { get; set; }
+        public BookStatus BookStatus { get; set; }
+        public ICollection<AuthorAndBook> Authors { get; set; }
+        public ICollection<Borrowing> Borrowings { get; set; }
+        public ICollection<Reservation> Reservations { get; set; }
     }
 }

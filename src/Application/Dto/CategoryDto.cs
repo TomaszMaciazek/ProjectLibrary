@@ -1,12 +1,10 @@
 ﻿using Application.Common;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Application.Dto
 {
-    public class PublisherDto : AuditDto
+    public class CategoryDto : AuditDto
     {
-        [Required]
         public string Name { get; set; }
         public IEnumerable<BookDto> Books { get; set; }
     }

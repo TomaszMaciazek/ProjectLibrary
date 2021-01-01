@@ -12,5 +12,6 @@ namespace Domain.Entities
         [Required]
         public int UserId { get; set; }
         public ApplicationUser User { get; set; }
+        public ReservationStatusEnum ReservationStatus { get; set; }
     }
 }

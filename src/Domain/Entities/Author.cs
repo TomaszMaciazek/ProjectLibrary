@@ -8,6 +8,6 @@ namespace Domain.Entities
     {
         [Required]
         public string Name { get; set; }
-        public IEnumerable<AuthorAndBook> Books { get; set; }
+        public ICollection<AuthorAndBook> Books { get; set; }
     }
 }

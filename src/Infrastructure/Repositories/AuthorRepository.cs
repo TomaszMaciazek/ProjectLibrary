@@ -15,7 +15,7 @@ namespace Infrastructure.Repositories
         {
         }
 
-        public IEnumerable<Author> GetAllAuthors() => DbSet;
+        public async Task<ICollection<Author>> GetAllAuthors() => await DbSet.ToListAsync();
 
         public async Task<Author> GetAuthorById(int id)
         {

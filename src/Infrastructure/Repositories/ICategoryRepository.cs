@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public interface IAuthorRepository : IRepository<Author>
+    public interface ICategoryRepository : IRepository<Category>
     {
-        Task<ICollection<Author>> GetAllAuthors();
-        Task<Author> GetAuthorById(int id);
+        Task<ICollection<Category>> GetAllCategories();
+        Task<Category> GetCategoryById(int id);
     }
 }

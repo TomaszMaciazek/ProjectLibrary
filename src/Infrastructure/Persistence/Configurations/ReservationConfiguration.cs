@@ -8,7 +8,8 @@ namespace Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Reservation> builder)
         {
-            builder.HasOne(b => b.User).WithMany(u => u.Reservations).HasForeignKey(b => b.UserId);
+            builder.Property(r => r.ReservationStatus).HasConversion<int>();
+            builder.HasOne(r => r.User).WithMany(u => u.Reservations).HasForeignKey(b => b.UserId);
         }
     }
 }

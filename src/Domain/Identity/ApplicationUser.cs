@@ -7,8 +7,10 @@ namespace Domain.Identity
     public class ApplicationUser : IdentityUser<int>
     {
         public int? BorrowingsLimit { get; set; }
+        public int? ReservationsLimit { get; set; }
         public string CardNumber { get; set; }
-        public IEnumerable<Borrowing> Borrowings { get; set; }
-        public IEnumerable<Reservation> Reservations { get; set; }
+        public string Name { get; set; }
+        public ICollection<Borrowing> Borrowings { get; set; }
+        public ICollection<Reservation> Reservations { get; set; }
     }
 }

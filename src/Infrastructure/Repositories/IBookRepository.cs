@@ -1,12 +1,14 @@
 ﻿using Domain.Entities;
+using Infrastructure.Common;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public interface IBookRepository
+    public interface IBookRepository : IRepository<Book>
     {
-        IEnumerable<Book> GetAllBooks();
+        Task<ICollection<Book>> GetAllBooks();
+        Task<ICollection<Book>> GetAllAvailableBooks();
         Task<Book> GetBookById(int id);
     }
 }

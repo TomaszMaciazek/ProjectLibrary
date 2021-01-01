@@ -13,6 +13,8 @@ namespace Infrastructure.Persistence
         public DbSet<Publisher> Publishers { get; set; }
         public DbSet<Borrowing> Borrowings { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<AuthorAndBook> AuthorAndBooks { get; set; }
 
         public LibraryDbContext(DbContextOptions<LibraryDbContext> options) : base(options)
         {

@@ -2,10 +2,8 @@
 using Infrastructure.Common;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
@@ -16,7 +14,7 @@ namespace Infrastructure.Repositories
         public PublisherRepository(LibraryDbContext dbContext) : base(dbContext)
         {
         }
-        public IEnumerable<Publisher> GetAllPublishers() => DbSet;
+        public async Task<ICollection<Publisher>> GetAllPublishers() => await DbSet.ToListAsync();
         public async Task<Publisher> GetPublisherById(int id)
         {
             return await DbSet.Include(p => p.Books).Where(p => p.Id == id).FirstOrDefaultAsync();
