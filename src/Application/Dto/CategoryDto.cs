@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Application.Dto
 {
-    public class CategoryDto : AuditDto
+    public class CategoryDto : EditableAuditDto
     {
         public string Name { get; set; }
-        public IEnumerable<BookDto> Books { get; set; }
+        public IEnumerable<BaseBookDto> Books { get; set; }
     }
 }

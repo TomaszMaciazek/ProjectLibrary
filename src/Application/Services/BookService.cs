@@ -1,15 +1,16 @@
 ﻿using Application.Dto;
 using Application.Exceptions;
+using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
-using Infrastructure.Repositories;
+using Infrastructure.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class BookService
+    public class BookService : IBookService
     {
         private readonly IBookRepository _bookRepository;
         private readonly IAuthorAndBookRepository _authorAndBookRepository;
@@ -26,18 +27,18 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<ICollection<BookDto>> GetAllBooks()
-            => _mapper.Map<ICollection<BookDto>>(await _bookRepository.GetAllBooks());
-        public async Task<ICollection<BookDto>> GetAllAvailableBooks()
-            => _mapper.Map<ICollection<BookDto>>(await _bookRepository.GetAllAvailableBooks());
-        public async Task<BookDto> GetBookById(int id)
-            => _mapper.Map<BookDto>(await _bookRepository.GetBookById(id));
-        public async Task AddBook(AddOrUpdateBookDto newBook)
+        public async Task<ICollection<BaseBookDto>> GetAllBooksAsync(string filterString)
+            => _mapper.Map<ICollection<BaseBookDto>>(await _bookRepository.GetAllBooksAsync(filterString));
+        public async Task<ICollection<BaseBookDto>> GetAllAvailableBooksAsync(string filterString)
+            => _mapper.Map<ICollection<BaseBookDto>>(await _bookRepository.GetAllAvailableBooksAsync(filterString));
+        public async Task<BookWithDetalisDto> GetBookByIdAsync(int id)
+            => _mapper.Map<BookWithDetalisDto>(await _bookRepository.GetBookByIdAsync(id));
+        public async Task AddBookAsync(AddOrUpdateBookDto newBook)
         {
             try
             {
                 var mappedNewBook = _mapper.Map<Book>(newBook);
-                await _bookRepository.Add(mappedNewBook);
+                await _bookRepository.AddAsync(mappedNewBook);
                 foreach (var id in newBook.AuthorsId)
                 {
                     AuthorAndBook newRelation = new AuthorAndBook
@@ -45,7 +46,7 @@ namespace Application.Services
                         BookId = mappedNewBook.Id,
                         AuthorId = id
                     };
-                    await _authorAndBookRepository.Add(newRelation);
+                    await _authorAndBookRepository.AddAsync(newRelation);
                 }
             }
             catch (Exception)
@@ -53,11 +54,30 @@ namespace Application.Services
                 throw new AddOperationFailedException();
             }
         }
-        public async Task DeleteBook(int id)
+        public async Task UpdateBookAsync(AddOrUpdateBookDto book)
         {
             try
             {
-                await _bookRepository.Delete(id);
+                var entity = await _bookRepository.GetBookByIdAsync(book.Id);
+                entity.Title = book.Title;
+                entity.PublisherId = book.PublisherId;
+                entity.CategoryId = book.CategoryId;
+                entity.Description = book.Description;
+                entity.ModificationDate = book.CreationDate;
+                entity.ModifiedBy = book.CreatedBy;
+                await _authorAndBookRepository.ChangeBookRelationsAsync(book.AuthorsId, entity.Id);
+                await _bookRepository.UpdateAsync(entity);
+            }
+            catch (Exception)
+            {
+                throw new UpdateOperationFailedException();
+            }
+        }
+        public async Task DeleteBookAsync(int id)
+        {
+            try
+            {
+                await _bookRepository.DeleteAsync(id);
             }
             catch (Exception)
             {

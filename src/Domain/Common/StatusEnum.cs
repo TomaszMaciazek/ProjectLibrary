@@ -1,7 +1,6 @@
-﻿namespace Application.Common
+﻿namespace Domain.Common
 {
-    public enum ReservationStatusEnum
-    {
+    public enum StatusEnum { 
         Awaiting = 0,
         Realized = 1,
         Cancelled = 2

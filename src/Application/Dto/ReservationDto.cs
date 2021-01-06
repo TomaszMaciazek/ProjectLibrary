@@ -2,8 +2,8 @@
 
 namespace Application.Dto
 {
-    public class ReservationDto : AuditDto
+    public class ReservationDto : EditableAuditDto
     {
-        public BookDto Book { get; set; }
+        public BaseBookDto Book { get; set; }
     }
 }

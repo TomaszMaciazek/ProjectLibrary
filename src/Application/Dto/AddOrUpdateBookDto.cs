@@ -8,12 +8,13 @@ namespace Application.Dto
     {
         [Required]
         public string Title { get; set; }
+        public string Description { get; set; }
         [Required]
         public int YearOfRelease { get; set; }
         [Required]
         public int PublisherId { get; set; }
         [Required]
         public int CategoryId { get; set; }
-        public IEnumerable<int> AuthorsId { get; set; }
+        public ICollection<int> AuthorsId { get; set; }
     }
 }

@@ -1,11 +1,10 @@
 ﻿using Domain.Entities;
 using Infrastructure.Common;
+using Infrastructure.Interfaces;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
@@ -16,7 +15,7 @@ namespace Infrastructure.Repositories
         public BorrowingRepository(LibraryDbContext dbContext) : base(dbContext)
         {
         }
-        public async Task<ICollection<Borrowing>> GetAllBorrowings() { 
+        public async Task<ICollection<Borrowing>> GetAllBorrowingsAsync() { 
             return await DbSet
                 .Include(b => b.User)
                 .Include(b => b.Book)
@@ -28,7 +27,7 @@ namespace Infrastructure.Repositories
                         .ThenInclude(ab => ab.Author)
                 .ToListAsync(); 
         }
-        public async Task<ICollection<Borrowing>> GetAllNotReturnedBorrowings()
+        public async Task<ICollection<Borrowing>> GetAllNotReturnedBorrowingsAsync()
         {
             return await DbSet
                 .Include(b => b.User)
@@ -39,10 +38,10 @@ namespace Infrastructure.Repositories
                 .Include(b => b.Book)
                     .ThenInclude(book => book.Authors)
                         .ThenInclude(ab => ab.Author)
-                .Where(b => !b.ReturnDate.HasValue)
+                .Where(b => !b.ReturnedByUser.HasValue)
                 .ToListAsync();
         }
-        public async Task<Borrowing> GetBorrowingById(int id)
+        public async Task<Borrowing> GetBorrowingByIdAsync(int id)
         {
             return await DbSet
                 .Include(b => b.User)
@@ -54,9 +53,9 @@ namespace Infrastructure.Repositories
                     .ThenInclude(book => book.Authors)
                         .ThenInclude(ab => ab.Author)
                 .Where(b => b.Id == id)
-                .FirstOrDefaultAsync();
+                .SingleOrDefaultAsync();
         }
-        public async Task<ICollection<Borrowing>> GetAllUserBorrowings(int userId)
+        public async Task<ICollection<Borrowing>> GetAllUserBorrowingsAsync(int userId)
         {
             return await DbSet
                 .Include(b => b.Book)
@@ -70,7 +69,7 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<ICollection<Borrowing>> GetAllUserNotReturnedBorrowings(int userId)
+        public async Task<ICollection<Borrowing>> GetAllUserNotReturnedBorrowingsAsync(int userId)
         {
             return await DbSet
                 .Include(b => b.Book)
@@ -80,7 +79,7 @@ namespace Infrastructure.Repositories
                 .Include(b => b.Book)
                     .ThenInclude(book => book.Authors)
                         .ThenInclude(ab => ab.Author)
-                .Where(b => b.UserId == userId && !b.ReturnDate.HasValue)
+                .Where(b => b.UserId == userId && !b.ReturnedByUser.HasValue)
                 .ToListAsync();
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Infrastructure.Common;
+using Infrastructure.Interfaces;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -15,9 +16,9 @@ namespace Infrastructure.Repositories
         {
         }
 
-        public async Task<ICollection<Author>> GetAllAuthors() => await DbSet.ToListAsync();
+        public async Task<ICollection<Author>> GetAllAuthorsAsync() => await DbSet.ToListAsync();
 
-        public async Task<Author> GetAuthorById(int id)
+        public async Task<Author> GetAuthorByIdAsync(int id)
         {
             return await DbSet.Include(a => a.Books)
             .ThenInclude(ab => ab.Book)

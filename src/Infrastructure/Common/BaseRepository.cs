@@ -20,19 +20,19 @@ namespace Infrastructure.Common
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task Add(Entity entity)
+        public async Task AddAsync(Entity entity)
         {
             DbSet.Add(entity);
             await SaveChangesAsync();
         }
 
-        public async Task Update(Entity entity)
+        public async Task UpdateAsync(Entity entity)
         {
             DbSet.Update(entity);
             await SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             var entity = DbSet.FirstOrDefault(x => x.Id == id);
             DbSet.Remove(entity);

@@ -12,5 +12,6 @@ namespace Domain.Identity
         public string Name { get; set; }
         public ICollection<Borrowing> Borrowings { get; set; }
         public ICollection<Reservation> Reservations { get; set; }
+        public ICollection<ProlongRequest> ProlongRequests { get; set; }
     }
 }

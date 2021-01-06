@@ -1,12 +1,11 @@
 ﻿using Domain.Common;
 using Domain.Entities;
 using Infrastructure.Common;
+using Infrastructure.Interfaces;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
@@ -17,7 +16,7 @@ namespace Infrastructure.Repositories
         public ReservationRepository(LibraryDbContext dbContext) : base(dbContext)
         {
         }
-        public async Task<ICollection<Reservation>> GetAllReservations()
+        public async Task<ICollection<Reservation>> GetAllReservationsAsync()
         {
             return await DbSet
                 .Include(r => r.Book)
@@ -27,10 +26,10 @@ namespace Infrastructure.Repositories
                 .Include(r => r.Book)
                     .ThenInclude(book => book.Authors)
                         .ThenInclude(ab => ab.Author)
-                .Where(r => r.ReservationStatus == ReservationStatusEnum.Awaiting)
+                .Where(r => r.ReservationStatus == StatusEnum.Awaiting)
                 .ToListAsync();
         }
-        public async Task<ICollection<Reservation>> GetAllAwaitingReservations()
+        public async Task<ICollection<Reservation>> GetAllAwaitingReservationsAsync()
         {
             return await DbSet
                 .Include(r => r.Book)
@@ -40,11 +39,11 @@ namespace Infrastructure.Repositories
                 .Include(r => r.Book)
                     .ThenInclude(book => book.Authors)
                         .ThenInclude(ab => ab.Author)
-                .Where(r => r.ReservationStatus == ReservationStatusEnum.Awaiting)
+                .Where(r => r.ReservationStatus == StatusEnum.Awaiting)
                 .ToListAsync();
 
         }
-        public async Task<Reservation> GetReservationById(int id)
+        public async Task<Reservation> GetReservationByIdAsync(int id)
         {
             return await DbSet
                 .Include(b => b.Book)
@@ -57,7 +56,7 @@ namespace Infrastructure.Repositories
                 .Where(b => b.Id == id)
                 .FirstOrDefaultAsync();
         }
-        public async Task<ICollection<Reservation>> GetAllUserReservations(int userId)
+        public async Task<ICollection<Reservation>> GetAllUserReservationsAsync(int userId)
         {
             return await DbSet
                 .Include(b => b.Book)
@@ -71,7 +70,7 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<ICollection<Reservation>> GetAllUserAwaitingReservations(int userId)
+        public async Task<ICollection<Reservation>> GetAllUserAwaitingReservationsAsync(int userId)
         {
             return await DbSet
                 .Include(b => b.Book)
@@ -81,7 +80,7 @@ namespace Infrastructure.Repositories
                 .Include(b => b.Book)
                     .ThenInclude(book => book.Authors)
                         .ThenInclude(ab => ab.Author)
-                .Where(b => b.UserId == userId && b.ReservationStatus == ReservationStatusEnum.Awaiting)
+                .Where(b => b.UserId == userId && b.ReservationStatus == StatusEnum.Awaiting)
                 .ToListAsync();
         }
     }

@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Application.Dto
 {
-    public class AuthorDto : AuditDto
+    public class AuthorDto : EditableAuditDto
     {
         [Required]
         public string Name { get; set; }
-        public IEnumerable<BookDto> Books { get; set; }
+        public IEnumerable<BaseBookDto> Books { get; set; }
     }
 }

@@ -3,11 +3,11 @@ using Infrastructure.Common;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Interfaces
 {
     public interface IAuthorRepository : IRepository<Author>
     {
-        Task<ICollection<Author>> GetAllAuthors();
-        Task<Author> GetAuthorById(int id);
+        Task<ICollection<Author>> GetAllAuthorsAsync();
+        Task<Author> GetAuthorByIdAsync(int id);
     }
 }

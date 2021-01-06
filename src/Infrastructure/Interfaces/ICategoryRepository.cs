@@ -3,11 +3,11 @@ using Infrastructure.Common;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Interfaces
 {
     public interface ICategoryRepository : IRepository<Category>
     {
-        Task<ICollection<Category>> GetAllCategories();
-        Task<Category> GetCategoryById(int id);
+        Task<ICollection<Category>> GetAllCategoriesAsync();
+        Task<Category> GetCategoryByIdAsync(int id);
     }
 }

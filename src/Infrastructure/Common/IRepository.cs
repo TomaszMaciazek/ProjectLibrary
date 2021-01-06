@@ -10,21 +10,21 @@ namespace Infrastructure.Common
         /// </summary>
         /// <param name="entity">New entity object</param>
         /// <returns>A task that represents the asynchronous addition to DbSet operation</returns>
-        Task Add(Entity entity);
+        Task AddAsync(Entity entity);
 
         /// <summary>
         /// Method removes entity from DbSet
         /// </summary>
         /// <param name="id">Id of entity that is being removed from DbSet</param>
         /// <returns>A task that represents the asynchronous removing entity from DbSet operation</returns>
-        Task Delete(int id);
+        Task DeleteAsync(int id);
 
         /// <summary>
         /// Method updates entity in DbSet
         /// </summary>
         /// <param name="entity">Entity that is being updated</param>
         /// <returns>A task that represents the asynchronous updating entity in DbSet operation</returns>
-        Task Update(Entity entity);
+        Task UpdateAsync(Entity entity);
 
         /// <summary>
         /// Method to save changes in databse

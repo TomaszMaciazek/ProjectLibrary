@@ -8,7 +8,6 @@ namespace Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Book> builder)
         {
-            builder.Property(b => b.BookStatus).HasConversion<int>();
             builder.HasOne(b => b.Category).WithMany(c => c.Books)
                 .HasForeignKey(b => b.CategoryId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(b => b.Publisher).WithMany(p => p.Books)

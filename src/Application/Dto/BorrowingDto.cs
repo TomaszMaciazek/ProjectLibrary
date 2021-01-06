@@ -3,10 +3,11 @@ using System;
 
 namespace Application.Dto
 {
-    public class BorrowingDto : AuditDto
+    public class BorrowingDto : EditableAuditDto
     {
-        public BookDto Book { get; set; }
-        public DateTime? ReturnDate { get; set; }
+        public BaseBookDto Book { get; set; }
+        public DateTime ExpirationDate { get; set; }
+        public DateTime? ReturnedByUser { get; set; }
         public string UserFirstAndLastName { get; set; }
         public string UserCardNumber { get; set; }
     }
