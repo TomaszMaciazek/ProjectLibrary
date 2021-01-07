@@ -1,4 +1,6 @@
 ﻿using Application.Dto;
+using Application.ViewModels.AddVM;
+using Application.ViewModels.UpdateVM;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,9 +8,12 @@ namespace Application.Interfaces
 {
     public interface IBorrowingService
     {
-        Task AddBorrowingAsync(AddBorrowingDto newBorrowing);
+        Task AddBorrowingAsync(AddBorrowingVM newBorrowing);
+        Task AddProlongRequestAsync(AddProlongRequestVM model);
+        Task ChangeProlongRequestStatusAsync(UpdateProlongRequestVM requestVM);
         Task DeleteBorrowingAsync(int id);
-        Task FinishBorrowingAsync(int id);
+        Task DeleteProlongRequestAsync(int id);
+        Task FinishBorrowingAsync(UpdateBorrowingVM borrowingVM);
         Task<ICollection<BorrowingDto>> GetAllBorrowingsAsync();
         Task<ICollection<BorrowingDto>> GetAllNotReturnedBorrowingsAsync();
         Task<ICollection<BorrowingDto>> GetAllUserBorrowingsAsync(int userId);

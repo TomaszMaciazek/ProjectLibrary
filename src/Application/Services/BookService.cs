@@ -1,6 +1,8 @@
 ﻿using Application.Dto;
 using Application.Exceptions;
 using Application.Interfaces;
+using Application.ViewModels.AddVM;
+using Application.ViewModels.UpdateVM;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Interfaces;
@@ -33,7 +35,7 @@ namespace Application.Services
             => _mapper.Map<ICollection<BaseBookDto>>(await _bookRepository.GetAllAvailableBooksAsync(filterString));
         public async Task<BookWithDetalisDto> GetBookByIdAsync(int id)
             => _mapper.Map<BookWithDetalisDto>(await _bookRepository.GetBookByIdAsync(id));
-        public async Task AddBookAsync(AddOrUpdateBookDto newBook)
+        public async Task AddBookAsync(AddBookVM newBook)
         {
             try
             {
@@ -54,7 +56,7 @@ namespace Application.Services
                 throw new AddOperationFailedException();
             }
         }
-        public async Task UpdateBookAsync(AddOrUpdateBookDto book)
+        public async Task UpdateBookAsync(UpdateBookVM book)
         {
             try
             {
@@ -63,8 +65,8 @@ namespace Application.Services
                 entity.PublisherId = book.PublisherId;
                 entity.CategoryId = book.CategoryId;
                 entity.Description = book.Description;
-                entity.ModificationDate = book.CreationDate;
-                entity.ModifiedBy = book.CreatedBy;
+                entity.ModificationDate = book.ModyficationDate;
+                entity.ModifiedBy = book.ModifiedBy;
                 await _authorAndBookRepository.ChangeBookRelationsAsync(book.AuthorsId, entity.Id);
                 await _bookRepository.UpdateAsync(entity);
             }

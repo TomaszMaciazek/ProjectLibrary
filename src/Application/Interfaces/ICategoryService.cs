@@ -1,4 +1,6 @@
 ﻿using Application.Dto;
+using Application.ViewModels.AddVM;
+using Application.ViewModels.UpdateVM;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,10 +8,10 @@ namespace Application.Interfaces
 {
     public interface ICategoryService
     {
-        Task AddCategoryAsync(AddOrUpdateCategoryDto category);
+        Task AddCategoryAsync(AddCategoryVM category);
         Task DeleteCategoryAsync(int id);
         Task<ICollection<CategoryDto>> GetAllCategoriesAsync(int id);
         Task<CategoryDto> GetCategoryByIdAsync(int id);
-        Task UpdateCategoryAsync(AddOrUpdateCategoryDto category);
+        Task UpdateCategoryAsync(UpdateCategoryVM category);
     }
 }

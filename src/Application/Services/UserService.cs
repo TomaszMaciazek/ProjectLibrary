@@ -23,7 +23,7 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task CreateLibrarianAsync(UserVM newUser)
+        public async Task CreateLibrarianAsync(CreateUserVM newUser)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace Application.Services
 
         }
 
-        public async Task CreateReaderAsync(UserVM newUser)
+        public async Task CreateReaderAsync(CreateUserVM newUser)
         {
             try
             {

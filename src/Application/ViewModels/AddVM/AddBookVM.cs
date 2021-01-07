@@ -1,20 +1,16 @@
-﻿using Application.Common;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
-namespace Application.Dto
+namespace Application.ViewModels.AddVM
 {
-    public class AddOrUpdateBookDto : AuditDto
+    public class AddBookVM : BaseAddVM
     {
-        [Required]
         public string Title { get; set; }
         public string Description { get; set; }
-        [Required]
         public int YearOfRelease { get; set; }
-        [Required]
         public int PublisherId { get; set; }
-        [Required]
         public int CategoryId { get; set; }
+        public int Count { get; set; }
         public ICollection<int> AuthorsId { get; set; }
     }
 }

@@ -8,8 +8,8 @@ namespace Application.Interfaces
 {
     public interface IUserService
     {
-        Task CreateLibrarianAsync(UserVM newUser);
-        Task CreateReaderAsync(UserVM newUser);
+        Task CreateLibrarianAsync(CreateUserVM newUser);
+        Task CreateReaderAsync(CreateUserVM newUser);
         Task DeleteUserAsync(int id);
         Task<ICollection<UserDto>> GetAllLibrariansAsync();
         Task<ICollection<UserDto>> GetAllReadersAsync();

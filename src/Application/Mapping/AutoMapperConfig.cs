@@ -9,8 +9,7 @@ namespace Application.Mapping
             {
 
                 config.AddEntityToDtoMaps();
-
-                config.AddDtoToEntityMaps();
+                config.AddViewModelToEntityMaps();
 
             })
             .CreateMapper();

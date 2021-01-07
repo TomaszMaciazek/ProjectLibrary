@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
-    public class ProlongRequest
+    public class ProlongRequest : AuditEntity
     {
         [Required]
         public int BorrowingId { get; set; }

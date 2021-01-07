@@ -15,6 +15,7 @@ namespace Infrastructure
             services.AddTransient<IPublisherRepository, PublisherRepository>();
             services.AddTransient<IReservationRepository, ReservationRepository>();
             services.AddTransient<IBorrowingRepository, BorrowingRepository>();
+            services.AddTransient<IProlongRequestRepository, ProlongRequestRepository>();
             return services;
         }
     }

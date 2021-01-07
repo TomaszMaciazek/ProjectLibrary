@@ -1,9 +1,8 @@
-﻿using Application.Common;
-using System;
+﻿using System;
 
-namespace Application.Dto
+namespace Application.ViewModels.AddVM
 {
-    public class AddProlongRequestDto : AuditDto
+    public class AddProlongRequestVM : BaseAddVM
     {
         public int UserId { get; set; }
         public int BorrowingId { get; set; }

@@ -1,10 +1,11 @@
 ﻿using Domain.Entities;
+using Infrastructure.Common;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Interfaces
 {
-    public interface IProlongRequestRepository
+    public interface IProlongRequestRepository : IRepository<ProlongRequest>
     {
         Task<ICollection<ProlongRequest>> GetAllAwaitingProlongRequestsAsync();
         Task<ICollection<ProlongRequest>> GetAllProlongRequestsAsync();

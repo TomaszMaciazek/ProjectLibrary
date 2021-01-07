@@ -1,7 +1,8 @@
 ﻿using Application.Dto;
 using Application.Exceptions;
 using Application.Interfaces;
-using Application.ViewModels;
+using Application.ViewModels.AddVM;
+using Application.ViewModels.UpdateVM;
 using AutoMapper;
 using Domain.Common;
 using Domain.Entities;
@@ -47,7 +48,7 @@ namespace Application.Services
             }
         }
 
-        public async Task AddReservationAsync(AddReservationDto reservationDto)
+        public async Task AddReservationAsync(AddReservationVM reservationDto)
         {
             try
             {
@@ -61,35 +62,19 @@ namespace Application.Services
 
         }
 
-        public async Task CancelReservationAsync(ChangeReservationStatusVM model)
+        public async Task ChangeReservationStatus(UpdateReservationVM model)
         {
             try
             {
-                var reservation = await _reservationRepository.GetReservationByIdAsync(model.ReservationId);
-                reservation.ReservationStatus = StatusEnum.Cancelled;
+                var reservation = await _reservationRepository.GetReservationByIdAsync(model.Id);
+                reservation.ReservationStatus = (StatusEnum)model.NewStatus;
                 reservation.ModificationDate = model.ModyficationDate;
                 reservation.ModifiedBy = model.ModifiedBy;
                 await _reservationRepository.UpdateAsync(reservation);
             }
-            catch (Exception)
+            catch
             {
-                throw new ReservationStatusChangeFailedException();
-            }
-        }
-
-        public async Task RealizeReservationAsync(ChangeReservationStatusVM model)
-        {
-            try
-            {
-                var reservation = await _reservationRepository.GetReservationByIdAsync(model.ReservationId);
-                reservation.ReservationStatus = StatusEnum.Realized;
-                reservation.ModificationDate = model.ModyficationDate;
-                reservation.ModifiedBy = model.ModifiedBy;
-                await _reservationRepository.UpdateAsync(reservation);
-            }
-            catch (Exception)
-            {
-                throw new ReservationStatusChangeFailedException();
+                throw new StatusChangingFailedException();
             }
         }
 

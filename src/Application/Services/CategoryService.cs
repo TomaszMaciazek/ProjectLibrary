@@ -1,6 +1,8 @@
 ﻿using Application.Dto;
 using Application.Exceptions;
 using Application.Interfaces;
+using Application.ViewModels.AddVM;
+using Application.ViewModels.UpdateVM;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Interfaces;
@@ -24,7 +26,7 @@ namespace Application.Services
             => _mapper.Map<ICollection<CategoryDto>>(await _categoryRepository.GetAllCategoriesAsync());
         public async Task<CategoryDto> GetCategoryByIdAsync(int id)
             => _mapper.Map<CategoryDto>(await _categoryRepository.GetCategoryByIdAsync(id));
-        public async Task AddCategoryAsync(AddOrUpdateCategoryDto category)
+        public async Task AddCategoryAsync(AddCategoryVM category)
         {
             try
             {
@@ -36,14 +38,14 @@ namespace Application.Services
                 throw new AddOperationFailedException();
             }
         }
-        public async Task UpdateCategoryAsync(AddOrUpdateCategoryDto category)
+        public async Task UpdateCategoryAsync(UpdateCategoryVM category)
         {
             try
             {
                 var entity = await _categoryRepository.GetCategoryByIdAsync(category.Id);
                 entity.Name = category.Name;
-                entity.ModificationDate = category.CreationDate;
-                entity.ModifiedBy = category.CreatedBy;
+                entity.ModificationDate = category.ModyficationDate;
+                entity.ModifiedBy = category.ModifiedBy;
                 await _categoryRepository.UpdateAsync(entity);
             }
             catch (Exception)
