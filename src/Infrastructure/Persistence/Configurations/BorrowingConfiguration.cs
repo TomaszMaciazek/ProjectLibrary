@@ -8,7 +8,10 @@ namespace Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Borrowing> builder)
         {
-            builder.HasOne(b => b.User).WithMany(u => u.Borrowings).HasForeignKey(b => b.UserId);
+            builder.HasOne(b => b.User)
+                .WithMany(u => u.Borrowings)
+                .HasForeignKey(b => b.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

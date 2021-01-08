@@ -15,9 +15,9 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasMany(b => b.Authors).WithOne(a => a.Book)
                 .HasForeignKey(a => a.BookId).OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(b => b.Borrowings).WithOne(borrowing => borrowing.Book)
-                .HasForeignKey(borrowing => borrowing.BookId).OnDelete(DeleteBehavior.SetNull);
+                .HasForeignKey(borrowing => borrowing.BookId).OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(b => b.Reservations).WithOne(r => r.Book)
-                .HasForeignKey(r => r.BookId).OnDelete(DeleteBehavior.SetNull);
+                .HasForeignKey(r => r.BookId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

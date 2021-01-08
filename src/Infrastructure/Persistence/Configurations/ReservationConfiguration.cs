@@ -9,7 +9,10 @@ namespace Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Reservation> builder)
         {
             builder.Property(r => r.ReservationStatus).HasConversion<int>();
-            builder.HasOne(r => r.User).WithMany(u => u.Reservations).HasForeignKey(b => b.UserId);
+            builder.HasOne(r => r.User)
+                .WithMany(u => u.Reservations)
+                .HasForeignKey(b => b.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
