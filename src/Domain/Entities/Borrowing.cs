@@ -14,8 +14,7 @@ namespace Domain.Entities
         [Required]
         public DateTime ExpirationDate { get; set; }
         public DateTime? ReturnedByUser { get; set; }
-        [Required]
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public ApplicationUser User { get; set; }
         public ICollection<ProlongRequest> ProlongRequests { get; set; }
     }

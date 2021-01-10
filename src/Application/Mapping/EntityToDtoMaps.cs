@@ -12,11 +12,15 @@ namespace Application.Mapping
         {
             config.CreateMap<Book, BaseBookDto>()
                     .ForMember(dest => dest.Authors, opt =>
-                        opt.MapFrom(src => src.Authors.Select(x => x.Author)));
+                        opt.MapFrom(src => src.Authors.Select(x => x.Author.Name)))
+                    .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
+                    .ForMember(dest => dest.Publisher, opt => opt.MapFrom(src => src.Publisher.Name));
 
             config.CreateMap<Book, BookWithDetalisDto>()
                     .ForMember(dest => dest.Authors, opt =>
-                        opt.MapFrom(src => src.Authors.Select(x => x.Author)));
+                        opt.MapFrom(src => src.Authors.Select(x => x.Author.Name)))
+                    .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
+                    .ForMember(dest => dest.Publisher, opt => opt.MapFrom(src => src.Publisher.Name));
 
             config.CreateMap<Author, AuthorDto>();
 
