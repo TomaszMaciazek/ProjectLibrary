@@ -22,11 +22,11 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<ICollection<CategoryDto>> GetAllCategoriesAsync()
-            => _mapper.Map<ICollection<CategoryDto>>(await _publisherRepository.GetAllPublishersAsync());
+        public async Task<ICollection<PublisherDto>> GetAllPublishersAsync()
+            => _mapper.Map<ICollection<PublisherDto>>(await _publisherRepository.GetAllPublishersAsync());
 
-        public async Task<CategoryDto> GetCategoryByIdAsync(int id)
-            => _mapper.Map<CategoryDto>(await _publisherRepository.GetPublisherByIdAsync(id));
+        public async Task<PublisherDto> GetPublisherByIdAsync(int id)
+            => _mapper.Map<PublisherDto>(await _publisherRepository.GetPublisherByIdAsync(id));
 
         public async Task AddPublisherAsync(AddPublisherVM publisher)
         {
@@ -40,7 +40,7 @@ namespace Application.Services
                 throw new AddOperationFailedException();
             }
         }
-        public async Task UpdateCategoryAsync(UpdatePublisherVM publisher)
+        public async Task UpdatePublisherAsync(UpdatePublisherVM publisher)
         {
             try
             {

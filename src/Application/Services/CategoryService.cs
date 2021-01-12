@@ -22,7 +22,7 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<ICollection<CategoryDto>> GetAllCategoriesAsync(int id)
+        public async Task<ICollection<CategoryDto>> GetAllCategoriesAsync()
             => _mapper.Map<ICollection<CategoryDto>>(await _categoryRepository.GetAllCategoriesAsync());
         public async Task<CategoryDto> GetCategoryByIdAsync(int id)
             => _mapper.Map<CategoryDto>(await _categoryRepository.GetCategoryByIdAsync(id));

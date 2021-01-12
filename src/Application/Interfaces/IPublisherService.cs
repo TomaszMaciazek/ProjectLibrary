@@ -10,8 +10,8 @@ namespace Application.Interfaces
     {
         Task AddPublisherAsync(AddPublisherVM publisher);
         Task DeletePublisherAsync(int id);
-        Task<ICollection<CategoryDto>> GetAllCategoriesAsync();
-        Task<CategoryDto> GetCategoryByIdAsync(int id);
-        Task UpdateCategoryAsync(UpdatePublisherVM publisher);
+        Task<ICollection<PublisherDto>> GetAllPublishersAsync();
+        Task<PublisherDto> GetPublisherByIdAsync(int id);
+        Task UpdatePublisherAsync(UpdatePublisherVM publisher);
     }
 }
