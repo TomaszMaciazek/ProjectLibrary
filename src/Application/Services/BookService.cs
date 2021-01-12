@@ -63,6 +63,7 @@ namespace Application.Services
                 var entity = await _bookRepository.GetBookByIdAsync(book.Id);
                 entity.Title = book.Title;
                 entity.PublisherId = book.PublisherId;
+                entity.ImageUrl = book.ImageUrl;
                 entity.CategoryId = book.CategoryId;
                 entity.Description = book.Description;
                 entity.ModificationDate = book.ModyficationDate;

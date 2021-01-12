@@ -9,6 +9,7 @@ namespace Application.ViewModels.UpdateVM
         public int YearOfRelease { get; set; }
         public int PublisherId { get; set; }
         public int CategoryId { get; set; }
+        public string ImageUrl { get; set; }
         public int Count { get; set; }
         public ICollection<int> AuthorsId { get; set; }
     }

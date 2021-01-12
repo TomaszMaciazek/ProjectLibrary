@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Application.ViewModels.AddVM
 {
@@ -8,6 +7,7 @@ namespace Application.ViewModels.AddVM
         public string Title { get; set; }
         public string Description { get; set; }
         public int YearOfRelease { get; set; }
+        public string ImageUrl { get; set; }
         public int PublisherId { get; set; }
         public int CategoryId { get; set; }
         public int Count { get; set; }

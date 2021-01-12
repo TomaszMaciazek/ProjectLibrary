@@ -13,6 +13,7 @@ namespace Domain.Entities
         public int YearOfRelease { get; set; }
         [Required]
         public int Count { get; set; }
+        public string ImageUrl { get; set; }
         [Required]
         public int PublisherId { get; set; }
         public Publisher Publisher { get; set; }
