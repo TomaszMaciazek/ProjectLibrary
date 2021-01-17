@@ -23,7 +23,7 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task CreateLibrarianAsync(CreateUserVM newUser)
+        public async Task CreateLibrarianAsync(CreateLibrarianVM newUser)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace Application.Services
 
         }
 
-        public async Task CreateReaderAsync(CreateUserVM newUser)
+        public async Task CreateReaderAsync(CreateReaderVM newUser)
         {
             try
             {
@@ -60,8 +60,8 @@ namespace Application.Services
                     Name = newUser.Name,
                     UserName = PolishCharactersChanger.ChangePolishCharatersInString(newUser.Name.Replace(" ", "")).ToLower(),
                     CardNumber = newUser.CardNumber,
-                    BorrowingsLimit = 5,
-                    ReservationsLimit = 5
+                    BorrowingsLimit = newUser.BorrowingsLimit ?? 5,
+                    ReservationsLimit = newUser.ReservationsLimit ?? 5
 
                 };
                 var result = await _userManager.CreateAsync(user, newUser.Password);

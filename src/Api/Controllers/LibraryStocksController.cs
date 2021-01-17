@@ -63,7 +63,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        [Description("Adds book to database")]
+        [Description("Add book to database")]
         public async Task<IActionResult> Post([FromBody]AddBookVM bookVM)
         {
             try
@@ -75,7 +75,7 @@ namespace Api.Controllers
         }
 
         [HttpPut]
-        [Description("Updates book in database")]
+        [Description("Update book in database")]
         public async Task<IActionResult> Put([FromBody]UpdateBookVM bookVM)
         {
             try
@@ -87,7 +87,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Description("Removes book from database")]
+        [Description("Delete book from database")]
         public async Task<IActionResult> Delete(int id)
         {
             try

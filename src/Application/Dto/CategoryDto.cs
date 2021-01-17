@@ -6,6 +6,5 @@ namespace Application.Dto
     public class CategoryDto : EditableAuditDto
     {
         public string Name { get; set; }
-        public IEnumerable<BaseBookDto> Books { get; set; }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using Application.Interfaces;
+using Application.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -33,5 +35,23 @@ namespace Api.Controllers
             return Ok();
         }
         */
+
+        [HttpPost]
+        [Description("Creates user with Librarian role")]
+        [Route("[action]")]
+        public async Task<IActionResult> PostLibrarian(CreateLibrarianVM userVM)
+        {
+            await _userService.CreateLibrarianAsync(userVM);
+            return Ok();
+        }
+
+        [HttpPost]
+        [Description("Creates sser with Reader role")]
+        [Route("[action]")]
+        public async Task<IActionResult> PostReader(CreateReaderVM userVM)
+        {
+            await _userService.CreateReaderAsync(userVM);
+            return Ok();
+        }
     }
 }

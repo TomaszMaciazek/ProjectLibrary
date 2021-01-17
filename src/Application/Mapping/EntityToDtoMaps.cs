@@ -28,6 +28,8 @@ namespace Application.Mapping
 
             config.CreateMap<Category, CategoryDto>();
 
+            config.CreateMap<Category, CategoryWithBooksDto>();
+
             config.CreateMap<Reservation, ReservationDto>();
 
             config.CreateMap<Borrowing, BorrowingDto>()

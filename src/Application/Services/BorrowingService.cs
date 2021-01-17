@@ -16,17 +16,14 @@ namespace Application.Services
     public class BorrowingService : IBorrowingService
     {
         private readonly IBorrowingRepository _borrowingRepository;
-        private readonly IProlongRequestRepository _prolongRequestRepository;
         private readonly IMapper _mapper;
 
         public BorrowingService(
             IBorrowingRepository reservationRepository,
-            IProlongRequestRepository prolongRequestRepository,
             IMapper mapper
             )
         {
             _borrowingRepository = reservationRepository;
-            _prolongRequestRepository = prolongRequestRepository;
             _mapper = mapper;
         }
 
@@ -35,6 +32,18 @@ namespace Application.Services
             try
             {
                 return _mapper.Map<ICollection<BorrowingDto>>(await _borrowingRepository.GetAllBorrowingsAsync());
+            }
+            catch (Exception)
+            {
+                throw new GetOperationFailedException();
+            }
+        }
+
+        public async Task<BorrowingDto> GetBorrowingByIdAsync(int id)
+        {
+            try
+            {
+                return _mapper.Map<BorrowingDto>(await _borrowingRepository.GetBorrowingByIdAsync(id));
             }
             catch (Exception)
             {
@@ -68,12 +77,13 @@ namespace Application.Services
 
         }
 
-        public async Task FinishBorrowingAsync(UpdateBorrowingVM borrowingVM)
+        public async Task UpdateBorrowingAsync(UpdateBorrowingVM borrowingVM)
         {
             try
             {
                 var borrowing = await _borrowingRepository.GetBorrowingByIdAsync(borrowingVM.Id);
-                borrowing.ReturnedByUser = borrowingVM.ReturnedByUser;
+                borrowing.ReturnedByUser = borrowingVM.ReturnedByUser ?? borrowing.ReturnedByUser;
+                borrowing.ExpirationDate = borrowingVM.NewExpirationDate ?? borrowing.ExpirationDate;
                 borrowing.ModificationDate = borrowingVM.ModyficationDate;
                 borrowing.ModifiedBy = borrowingVM.ModifiedBy;
                 await _borrowingRepository.UpdateAsync(borrowing);
@@ -83,6 +93,8 @@ namespace Application.Services
                 throw new ReturningBorrowingOperationFaliedException();
             }
         }
+
+
 
         public async Task DeleteBorrowingAsync(int id)
         {
@@ -117,47 +129,6 @@ namespace Application.Services
             catch (Exception)
             {
                 throw new GetOperationFailedException();
-            }
-        }
-
-        public async Task AddProlongRequestAsync(AddProlongRequestVM model)
-        {
-            try
-            {
-                var mappedRequest = _mapper.Map<ProlongRequest>(model);
-                await _prolongRequestRepository.AddAsync(mappedRequest);
-            }
-            catch (Exception)
-            {
-                throw new AddOperationFailedException();
-            }
-        }
-
-        public async Task ChangeProlongRequestStatusAsync(UpdateProlongRequestVM requestVM)
-        {
-            try
-            {
-                var request = await _prolongRequestRepository.GetProlongRequestByIdAsync(requestVM.Id);
-                request.Status = (StatusEnum)requestVM.NewStatus;
-                request.ModificationDate = requestVM.ModyficationDate;
-                request.ModifiedBy = requestVM.ModifiedBy;
-                await _prolongRequestRepository.UpdateAsync(request);
-            }
-            catch (Exception)
-            {
-                throw new StatusChangingFailedException();
-            }
-        }
-
-        public async Task DeleteProlongRequestAsync(int id)
-        {
-            try
-            {
-                await _prolongRequestRepository.DeleteAsync(id);
-            }
-            catch (Exception)
-            {
-                throw new DeleteOperationFailedException();
             }
         }
     }

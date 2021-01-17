@@ -1,6 +1,10 @@
-﻿namespace Application.ViewModels
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Application.ViewModels
 {
-    public class CreateUserVM
+    public class CreateReaderVM
     {
         public string Email { get; set; }
         public string Password { get; set; }

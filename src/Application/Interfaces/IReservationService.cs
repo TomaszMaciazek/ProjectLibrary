@@ -9,7 +9,7 @@ namespace Application.Interfaces
     public interface IReservationService
     {
         Task AddReservationAsync(AddReservationVM reservationDto);
-        Task ChangeReservationStatus(UpdateReservationVM model);
+        Task UpdateReservationAsync(UpdateReservationVM model);
         Task DeleteReservationAsync(int id);
         Task<ICollection<ReservationDto>> GetAllAwaitingReservationsAsync();
         Task<ICollection<ReservationDto>> GetAllReservationsAsync();

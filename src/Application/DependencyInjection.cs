@@ -20,6 +20,7 @@ namespace Application
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IPublisherService, PublisherService>();
             services.AddTransient<IAuthorService, AuthorService>();
+            services.AddTransient<IProlongRequestService, ProlongRequestService>();
             services.AddTransient<UserManager<ApplicationUser>>();
             return services;
         }

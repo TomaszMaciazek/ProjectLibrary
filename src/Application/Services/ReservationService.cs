@@ -62,7 +62,7 @@ namespace Application.Services
 
         }
 
-        public async Task ChangeReservationStatus(UpdateReservationVM model)
+        public async Task UpdateReservationAsync(UpdateReservationVM model)
         {
             try
             {
