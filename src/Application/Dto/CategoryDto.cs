@@ -1,5 +1,4 @@
 ﻿using Application.Common;
-using System.Collections.Generic;
 
 namespace Application.Dto
 {

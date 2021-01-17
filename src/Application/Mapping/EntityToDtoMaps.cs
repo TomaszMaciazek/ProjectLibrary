@@ -24,7 +24,11 @@ namespace Application.Mapping
 
             config.CreateMap<Author, AuthorDto>();
 
+            config.CreateMap<Author, AuthorWithBooksDto>();
+
             config.CreateMap<Publisher, PublisherDto>();
+
+            config.CreateMap<Publisher, PublisherWithBooksDto>();
 
             config.CreateMap<Category, CategoryDto>();
 
