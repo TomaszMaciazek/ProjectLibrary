@@ -11,7 +11,7 @@ namespace Application.Interfaces
         Task AddCategoryAsync(AddCategoryVM category);
         Task DeleteCategoryAsync(int id);
         Task<ICollection<CategoryDto>> GetAllCategoriesAsync();
-        Task<CategoryDto> GetCategoryByIdAsync(int id);
+        Task<CategoryWithBooksDto> GetCategoryByIdAsync(int id);
         Task UpdateCategoryAsync(UpdateCategoryVM category);
     }
 }

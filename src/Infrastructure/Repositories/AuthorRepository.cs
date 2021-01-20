@@ -23,7 +23,7 @@ namespace Infrastructure.Repositories
             return await DbSet.Include(a => a.Books)
             .ThenInclude(ab => ab.Book)
             .Where(a => a.Id == id)
-            .FirstOrDefaultAsync();
+            .SingleOrDefaultAsync();
         }
     }
 }

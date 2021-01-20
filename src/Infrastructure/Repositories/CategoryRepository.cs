@@ -4,6 +4,7 @@ using Infrastructure.Interfaces;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
@@ -15,6 +16,14 @@ namespace Infrastructure.Repositories
         {
         }
         public async Task<ICollection<Category>> GetAllCategoriesAsync() => await DbSet.ToListAsync();
-        public async Task<Category> GetCategoryByIdAsync(int id) => await DbSet.FindAsync(id);
+        public async Task<Category> GetCategoryByIdAsync(int id)
+            => await DbSet
+            .Include(c => c.Books)
+                .ThenInclude(b => b.Authors)
+                    .ThenInclude(ab => ab.Author)
+            .Include(c => c.Books)
+                .ThenInclude(b => b.Publisher)
+            .Where(c => c.Id == id)
+            .SingleOrDefaultAsync();
     }
 }

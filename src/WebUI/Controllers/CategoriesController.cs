@@ -17,16 +17,19 @@ namespace WebUI.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        [Description("Show all categories")]
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var categories = await _categoryService.GetAllCategoriesAsync();
+            return View(categories);
         }
 
         [HttpGet("{id}")]
-        public IActionResult CategoryPage(int id)
+        [Description("Show details of category with given id")]
+        public async Task<IActionResult> CategoryPage(int id)
         {
-            //var category = _categoryService.Get
-            return View();
+            var category = await _categoryService.GetCategoryByIdAsync(id);
+            return View(category);
         }
 
         [HttpPost]
