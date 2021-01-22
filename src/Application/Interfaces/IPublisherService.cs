@@ -11,7 +11,7 @@ namespace Application.Interfaces
         Task AddPublisherAsync(AddPublisherVM publisher);
         Task DeletePublisherAsync(int id);
         Task<ICollection<PublisherDto>> GetAllPublishersAsync();
-        Task<PublisherDto> GetPublisherByIdAsync(int id);
+        Task<PublisherWithBooksDto> GetPublisherByIdAsync(int id);
         Task UpdatePublisherAsync(UpdatePublisherVM publisher);
     }
 }

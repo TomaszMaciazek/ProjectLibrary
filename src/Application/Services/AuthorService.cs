@@ -25,8 +25,8 @@ namespace Application.Services
         public async Task<ICollection<AuthorDto>> GetAllAuthorsAsync()
             => _mapper.Map<ICollection<AuthorDto>>(await _authorRepository.GetAllAuthorsAsync());
 
-        public async Task<AuthorDto> GetAuthorByIdAsync(int id)
-            => _mapper.Map<AuthorDto>(await _authorRepository.GetAuthorByIdAsync(id));
+        public async Task<AuthorWithBooksDto> GetAuthorByIdAsync(int id)
+            => _mapper.Map<AuthorWithBooksDto>(await _authorRepository.GetAuthorByIdAsync(id));
 
         public async Task AddAuthorAsync(AddAuthorVM author)
         {

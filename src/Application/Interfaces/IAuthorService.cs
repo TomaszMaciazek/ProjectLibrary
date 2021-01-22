@@ -11,7 +11,7 @@ namespace Application.Interfaces
         Task AddAuthorAsync(AddAuthorVM author);
         Task DeleteAuthorAsync(int id);
         Task<ICollection<AuthorDto>> GetAllAuthorsAsync();
-        Task<AuthorDto> GetAuthorByIdAsync(int id);
+        Task<AuthorWithBooksDto> GetAuthorByIdAsync(int id);
         Task UpdateAuthorAsync(UpdateAuthorVM author);
     }
 }

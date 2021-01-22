@@ -25,8 +25,8 @@ namespace Application.Services
         public async Task<ICollection<PublisherDto>> GetAllPublishersAsync()
             => _mapper.Map<ICollection<PublisherDto>>(await _publisherRepository.GetAllPublishersAsync());
 
-        public async Task<PublisherDto> GetPublisherByIdAsync(int id)
-            => _mapper.Map<PublisherDto>(await _publisherRepository.GetPublisherByIdAsync(id));
+        public async Task<PublisherWithBooksDto> GetPublisherByIdAsync(int id)
+            => _mapper.Map<PublisherWithBooksDto>(await _publisherRepository.GetPublisherByIdAsync(id));
 
         public async Task AddPublisherAsync(AddPublisherVM publisher)
         {
