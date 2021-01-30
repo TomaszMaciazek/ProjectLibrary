@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.ViewModels.AddVM;
 using Application.ViewModels.UpdateVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -18,14 +19,17 @@ namespace WebUI.Controllers
 
         [HttpGet("{id}")]
         [Description("Show details of book with given id")]
+        [AllowAnonymous]
         public async Task<IActionResult> BookPage(int id)
         {
             var book = await _bookService.GetBookByIdAsync(id);
             return View(book);
         }
 
+
         [HttpPost]
         [Description("Add book to database")]
+        [Authorize(Roles ="Admin, Librarian")]
         public async Task<IActionResult> CreateBook([FromBody] AddBookVM bookVM)
         {
             try
@@ -38,6 +42,7 @@ namespace WebUI.Controllers
 
         [HttpPut]
         [Description("Update book in database")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> UpdateBook([FromBody] UpdateBookVM bookVM)
         {
             try
@@ -50,6 +55,7 @@ namespace WebUI.Controllers
 
         [HttpDelete("{id}")]
         [Description("Delete book from database")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> DeleteBook(int id)
         {
             try

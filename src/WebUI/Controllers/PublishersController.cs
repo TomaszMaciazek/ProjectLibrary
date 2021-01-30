@@ -2,12 +2,14 @@
 using Application.Interfaces;
 using Application.ViewModels.AddVM;
 using Application.ViewModels.UpdateVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace WebUI.Controllers
 {
+    [Authorize(Roles = "Admin, Librarian")]
     public class PublishersController : Controller
     {
         private readonly IPublisherService _publisherService;

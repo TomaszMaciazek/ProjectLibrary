@@ -1,6 +1,6 @@
-﻿namespace Application.ViewModels
+﻿namespace WebUI.Models
 {
-    public class SignInUserVM
+    public class SignInUserModel
     {
         public string Email { get; set; }
         public string Password { get; set; }

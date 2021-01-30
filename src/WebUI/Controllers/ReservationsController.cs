@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.ViewModels.AddVM;
 using Application.ViewModels.UpdateVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -16,16 +17,18 @@ namespace WebUI.Controllers
         {
             _reservationService = reservationService;
         }
+
         [HttpGet]
         [Description("Get all reservations")]
+        [Authorize(Roles = "Admin, Librarian")]
         public IActionResult Index()
         {
             return View();
         }
 
-
         [HttpPost]
         [Description("Add reservation to database")]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> CreateReservation([FromBody] AddReservationVM publisherVM)
         {
             try
@@ -38,6 +41,7 @@ namespace WebUI.Controllers
 
         [HttpPut]
         [Description("Update reservation in database")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> UpdateReservation([FromBody] UpdateReservationVM publisherVM)
         {
             try
@@ -50,6 +54,7 @@ namespace WebUI.Controllers
 
         [HttpDelete("{id}")]
         [Description("Delete reservation from database")]
+        [Authorize(Roles = "Admin, Librarian, Reader")]
         public async Task<IActionResult> DeleteReservation(int id)
         {
             try
