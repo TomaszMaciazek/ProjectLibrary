@@ -4,6 +4,7 @@ using Application.Interfaces;
 using Application.ViewModels;
 using Application.ViewModels.AddVM;
 using Application.ViewModels.UpdateVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -38,6 +39,7 @@ namespace Api.Controllers
 
         [HttpGet]
         [Description("Get all books and filter data")]
+        [AllowAnonymous]
         public async Task<ActionResult<BooksPageVM>> Get()
         {
             var books = await _bookService.GetAllBooksAsync(null);
@@ -56,6 +58,7 @@ namespace Api.Controllers
 
         [HttpGet("{id}")]
         [Description("Get book by id")]
+        [AllowAnonymous]
         public async Task<ActionResult<BookWithDetalisDto>> Get(int id)
         {
             var book = await _bookService.GetBookByIdAsync(id);
@@ -64,6 +67,7 @@ namespace Api.Controllers
 
         [HttpPost]
         [Description("Add book to database")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Post([FromBody]AddBookVM bookVM)
         {
             try
@@ -76,6 +80,7 @@ namespace Api.Controllers
 
         [HttpPut]
         [Description("Update book in database")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Put([FromBody]UpdateBookVM bookVM)
         {
             try
@@ -88,6 +93,7 @@ namespace Api.Controllers
 
         [HttpDelete("{id}")]
         [Description("Delete book from database")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Delete(int id)
         {
             try

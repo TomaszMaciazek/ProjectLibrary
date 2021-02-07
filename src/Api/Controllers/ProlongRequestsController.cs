@@ -3,6 +3,7 @@ using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels.AddVM;
 using Application.ViewModels.UpdateVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,7 @@ namespace Api.Controllers
 
         [HttpGet]
         [Description("Get all prolong requests")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<ActionResult<ICollection<ProlongRequestDto>>> Get()
         {
             var requests = await _prolongRequestService.GetAllProlongRequestsAsync();
@@ -34,6 +36,7 @@ namespace Api.Controllers
 
         [HttpPost]
         [Description("Add prolong request to database")]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> Post([FromBody]AddProlongRequestVM prolongRequesrVM)
         {
             try
@@ -46,6 +49,7 @@ namespace Api.Controllers
 
         [HttpPut]
         [Description("Update prolong request in database")]
+        [Authorize(Roles = "Admin, Librarian, Reader")]
         public async Task<IActionResult> Put([FromBody]UpdateProlongRequestVM prolongRequestVM)
         {
             try
@@ -58,6 +62,7 @@ namespace Api.Controllers
 
         [HttpDelete("{id}")]
         [Description("Delete prolong request from database")]
+        [Authorize(Roles = "Admin, Librarian, Reader")]
         public async Task<IActionResult> Delete(int id)
         {
             try

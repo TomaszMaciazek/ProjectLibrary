@@ -3,6 +3,7 @@ using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels.AddVM;
 using Application.ViewModels.UpdateVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +24,7 @@ namespace Api.Controllers
 
         [HttpGet]
         [Description("Get all reservations")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<ActionResult<ICollection<ReservationDto>>> Get()
         {
             var reservations = await _reservationService.GetAllReservationsAsync();
@@ -31,6 +33,7 @@ namespace Api.Controllers
 
         [HttpGet("awaitingReservations")]
         [Description("Get all awaiting reservations")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<ActionResult<ICollection<ReservationDto>>> GetAwaitingReservations()
         {
             var reservations = await _reservationService.GetAllAwaitingReservationsAsync();
@@ -39,6 +42,7 @@ namespace Api.Controllers
 
         [HttpGet("{id}")]
         [Description("Get all user reservations")]
+        [Authorize(Roles = "Admin, Librarian, Reader")]
         public async Task<ActionResult<ICollection<ReservationDto>>> GetUserReservations(int id)
         {
             var reservations = await _reservationService.GetAllUserReservationsAsync(id);
@@ -47,6 +51,7 @@ namespace Api.Controllers
 
         [HttpGet("awaitingReservations/{id}")]
         [Description("Get all user reservations")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<ActionResult<ICollection<ReservationDto>>> GetUserAwaitingReservations(int id)
         {
             var reservations = await _reservationService.GetAllUserAwaitingReservationsAsync(id);
@@ -55,6 +60,7 @@ namespace Api.Controllers
 
         [HttpPost]
         [Description("Add reservation to database")]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> Post([FromBody]AddReservationVM reservationVm)
         {
             try
@@ -67,6 +73,7 @@ namespace Api.Controllers
 
         [HttpPut]
         [Description("Update reservation in database")]
+        [Authorize(Roles = "Admin, Librarian, Reader")]
         public async Task<IActionResult> Put([FromBody]UpdateReservationVM reservationVm)
         {
             try
@@ -79,6 +86,7 @@ namespace Api.Controllers
 
         [HttpDelete("{id}")]
         [Description("Delete reservation from database")]
+        [Authorize(Roles = "Admin, Librarian, Reader")]
         public async Task<IActionResult> Delete(int id)
         {
             try

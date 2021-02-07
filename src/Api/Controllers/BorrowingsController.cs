@@ -3,6 +3,7 @@ using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels.AddVM;
 using Application.ViewModels.UpdateVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +24,7 @@ namespace Api.Controllers
 
         [HttpGet]
         [Description("Get all borrowings")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<ActionResult<ICollection<BorrowingDto>>> Get()
         {
             var borrowings = await _borrowingService.GetAllBorrowingsAsync();
@@ -31,6 +33,7 @@ namespace Api.Controllers
 
         [HttpGet("{id}")]
         [Description("Get borrowing by id")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<ActionResult<ICollection<BorrowingDto>>> Get(int id)
         {
             var borrowing = await _borrowingService.GetBorrowingByIdAsync(id);
@@ -39,6 +42,7 @@ namespace Api.Controllers
 
         [HttpPost]
         [Description("Add borrowing to database")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Post([FromBody]AddBorrowingVM borrowingVM)
         {
             try
@@ -50,6 +54,7 @@ namespace Api.Controllers
         }
         [HttpPut]
         [Description("Update borrowing in database")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Put([FromBody]UpdateBorrowingVM borrowingVM)
         {
             try
@@ -62,6 +67,7 @@ namespace Api.Controllers
 
         [HttpDelete("{id}")]
         [Description("Delete borrowing from Database")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Delete(int id)
         {
             try

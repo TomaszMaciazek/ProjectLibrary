@@ -3,6 +3,7 @@ using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels.AddVM;
 using Application.ViewModels.UpdateVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +24,7 @@ namespace Api.Controllers
 
         [HttpGet]
         [Description("Get all categories")]
+        [AllowAnonymous]
         public async Task<ActionResult<ICollection<CategoryDto>>> Get()
         {
             var categories = await _categoryService.GetAllCategoriesAsync();
@@ -31,6 +33,7 @@ namespace Api.Controllers
 
         [HttpGet("{id}")]
         [Description("Get category by id")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<ActionResult<CategoryDto>> Get(int id)
         {
             var category = await _categoryService.GetCategoryByIdAsync(id);
@@ -39,6 +42,7 @@ namespace Api.Controllers
 
         [HttpPost]
         [Description("Add category to database")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Post([FromBody]AddCategoryVM categoryVM)
         {
             try
@@ -51,6 +55,7 @@ namespace Api.Controllers
 
         [HttpPut]
         [Description("Update category in database")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Put([FromBody]UpdateCategoryVM categoryVM)
         {
             try
@@ -63,6 +68,7 @@ namespace Api.Controllers
 
         [HttpDelete("{id}")]
         [Description("Delete category from database")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Delete(int id)
         {
             try

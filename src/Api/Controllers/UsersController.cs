@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -23,22 +24,28 @@ namespace Api.Controllers
             _currerntUserService = currentUserService;
         }
 
-        /*
-        public async Task<IActionResult> ChangeCurrentUser(int id, string username, string email)
+        [HttpGet("librarians")]
+        [Description("Get all librarians")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetLibrarians()
         {
-            await Task.Run(() =>
-            {
-                _currerntUserService.Email = email;
-                _currerntUserService.UserId = id;
-                _currerntUserService.Username = username;
-            });
-            return Ok();
+            var librarians = await _userService.GetAllLibrariansAsync();
+            return Ok(librarians);
         }
-        */
+
+        [HttpGet("readers")]
+        [Description("Get all readers")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public async Task<IActionResult> GetReaders()
+        {
+            var readers = await _userService.GetAllReadersAsync();
+            return Ok(readers);
+        }
 
         [HttpPost]
         [Description("Creates user with Librarian role")]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PostLibrarian(CreateLibrarianVM userVM)
         {
             await _userService.CreateLibrarianAsync(userVM);
@@ -46,8 +53,9 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        [Description("Creates sser with Reader role")]
+        [Description("Creates user with Reader role")]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PostReader(CreateReaderVM userVM)
         {
             await _userService.CreateReaderAsync(userVM);

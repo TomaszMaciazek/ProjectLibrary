@@ -3,6 +3,7 @@ using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels.AddVM;
 using Application.ViewModels.UpdateVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,6 +23,7 @@ namespace Api.Controllers
 
         [HttpGet]
         [Description("Get all publishers")]
+        [AllowAnonymous]
         public async Task<ActionResult<ICollection<PublisherDto>>> Get()
         {
             var publishers = await _publisherService.GetAllPublishersAsync();
@@ -30,6 +32,7 @@ namespace Api.Controllers
 
         [HttpGet("{id}")]
         [Description("Get publisher by id")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<ActionResult<PublisherDto>> Get(int id)
         {
             var publisher = await _publisherService.GetPublisherByIdAsync(id);
@@ -38,6 +41,7 @@ namespace Api.Controllers
 
         [HttpPost]
         [Description("Add publisher to database")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Post([FromBody] AddPublisherVM publisherVM)
         {
             try
@@ -50,6 +54,7 @@ namespace Api.Controllers
 
         [HttpPut]
         [Description("Update publisher in database")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Put([FromBody] UpdatePublisherVM publisherVM)
         {
             try
@@ -62,6 +67,7 @@ namespace Api.Controllers
 
         [HttpDelete("{id}")]
         [Description("Delete publisher from database")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Delete(int id)
         {
             try
