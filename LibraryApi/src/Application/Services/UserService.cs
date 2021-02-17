@@ -8,6 +8,7 @@ using Domain.Identity;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Application.Services
@@ -15,12 +16,60 @@ namespace Application.Services
     public class UserService : IUserService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInController;
         private readonly IMapper _mapper;
 
-        public UserService(UserManager<ApplicationUser> userManager, IMapper mapper)
+        public UserService(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInController,
+            IMapper mapper
+            )
         {
             _userManager = userManager;
+            _signInController = signInController;
             _mapper = mapper;
+        }
+
+        public async Task<UserWithRoleDto> SignInUserAsync(UserVM userVM)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(userVM.Input);
+                user ??= await _userManager.FindByNameAsync(userVM.Input);
+                if(user != null)
+                {
+                    var result = await _signInController.PasswordSignInAsync(user, userVM.Password, userVM.RememberMe, false);
+                    if (result.Succeeded)
+                    {
+                        var userDto =  _mapper.Map<UserWithRoleDto>(user);
+                        var roles = await _userManager.GetRolesAsync(user);
+                        userDto.RoleName = roles[0];
+                        return userDto;
+                    }
+                    else if (result.IsLockedOut)
+                    {
+                        throw new UserIsLockedOutException();
+                    }
+                }
+                //user with given parameters does not exist
+                throw new NotFoundException();
+            }
+            catch (UserIsLockedOutException ex)
+            {
+                throw ex;
+            }
+            catch(NotFoundException ex)
+            {
+                throw ex;
+            }
+            catch (Exception) {
+                throw new SignInOperationFailedException();
+            }
+        }
+
+        public async Task SignOutUserAsync()
+        {
+                await _signInController.SignOutAsync();
         }
 
         public async Task CreateLibrarianAsync(CreateLibrarianVM newUser)
@@ -31,7 +80,8 @@ namespace Application.Services
                 {
                     Email = newUser.Email,
                     Name = newUser.Name,
-                    UserName = PolishCharactersChanger.ChangePolishCharatersInString(newUser.Name.Replace(" ", "")).ToLower()
+                    UserName = PolishCharactersChanger.ChangePolishCharatersInString(newUser.Name.Replace(" ", "")).ToLower(),
+                    IsActive = true
                 };
                 var result = await _userManager.CreateAsync(user, newUser.Password);
                 if (result == IdentityResult.Success)
@@ -61,8 +111,8 @@ namespace Application.Services
                     UserName = PolishCharactersChanger.ChangePolishCharatersInString(newUser.Name.Replace(" ", "")).ToLower(),
                     CardNumber = newUser.CardNumber,
                     BorrowingsLimit = newUser.BorrowingsLimit ?? 5,
-                    ReservationsLimit = newUser.ReservationsLimit ?? 5
-
+                    ReservationsLimit = newUser.ReservationsLimit ?? 5,
+                    IsActive = true
                 };
                 var result = await _userManager.CreateAsync(user, newUser.Password);
                 if (result == IdentityResult.Success)
@@ -102,9 +152,48 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApplicationUser> GetUserByIdAsync(int id)
+        public async Task MakeUserActive(int id)
         {
-            return await _userManager.FindByIdAsync(id.ToString());
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id.ToString());
+                if (user != null && !user.IsActive)
+                {
+                    user.IsActive = true;
+                    await _userManager.UpdateAsync(user);
+                }
+            }
+            catch (Exception)
+            {
+                throw new UpdateOperationFailedException();
+            }
+        }
+
+        public async Task MakeUserNotActive(int id)
+        {
+            try
+            {
+                if (id == 1)
+                {
+                    //prevents from making admin user not active
+                    throw new UpdateOperationFailedException();
+                }
+                var user = await _userManager.FindByIdAsync(id.ToString());
+                if (user != null && user.IsActive)
+                {
+                    user.IsActive = false;
+                    await _userManager.UpdateAsync(user);
+                }
+            }
+            catch (Exception)
+            {
+                throw new UpdateOperationFailedException();
+            }
+        }
+
+        public async Task<UserDto> GetUserByIdAsync(int id)
+        {
+            return _mapper.Map<UserDto>(await _userManager.FindByIdAsync(id.ToString()));
         }
 
         public async Task<ICollection<UserDto>> GetAllLibrariansAsync()
@@ -152,7 +241,21 @@ namespace Application.Services
             {
                 throw new UpdateOperationFailedException();
             }
+        }
 
+        public async Task<UserDto> GetCurrentUser(ClaimsPrincipal claims)
+            => _mapper.Map<UserDto>(await _userManager.GetUserAsync(claims));
+
+        public async Task<bool> IsLibrarian(int id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            return await _userManager.IsInRoleAsync(user, "Librarian");
+        }
+
+        public async Task<bool> IsReader(int id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            return await _userManager.IsInRoleAsync(user, "Reader");
         }
     }
 }

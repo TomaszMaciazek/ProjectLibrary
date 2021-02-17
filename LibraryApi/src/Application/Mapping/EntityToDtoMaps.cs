@@ -44,6 +44,9 @@ namespace Application.Mapping
 
             config.CreateMap<ApplicationUser, UserDto>();
 
+            config.CreateMap<ApplicationUser, UserWithRoleDto>()
+                .ForMember(dest => dest.RoleName, opt => opt.Ignore());
+
             return config;
         }
     }

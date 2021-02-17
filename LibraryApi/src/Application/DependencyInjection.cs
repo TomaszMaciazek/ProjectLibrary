@@ -14,7 +14,6 @@ namespace Application
             services.AddSingleton(AutoMapperConfig.Initialize());
             services.AddTransient<IBookService, BookService>();
             services.AddTransient<IUserService, UserService>();
-            services.AddTransient<ICurrentUserService, CurrentUserService>();
             services.AddTransient<IReservationService, ReservationService>();
             services.AddTransient<IBorrowingService, BorrowingService>();
             services.AddTransient<ICategoryService, CategoryService>();
@@ -22,6 +21,7 @@ namespace Application
             services.AddTransient<IAuthorService, AuthorService>();
             services.AddTransient<IProlongRequestService, ProlongRequestService>();
             services.AddTransient<UserManager<ApplicationUser>>();
+            services.AddTransient<SignInManager<ApplicationUser>>();
             return services;
         }
     }

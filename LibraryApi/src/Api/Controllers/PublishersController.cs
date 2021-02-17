@@ -47,9 +47,11 @@ namespace Api.Controllers
             try
             {
                 await _publisherService.AddPublisherAsync(publisherVM);
+                return Ok();
             }
-            catch (AddOperationFailedException) { }
-            return Ok();
+            catch (AddOperationFailedException) {
+                return Problem();
+            }
         }
 
         [HttpPut]
@@ -60,9 +62,11 @@ namespace Api.Controllers
             try
             {
                 await _publisherService.UpdatePublisherAsync(publisherVM);
+                return Ok();
             }
-            catch (UpdateOperationFailedException) { }
-            return Ok();
+            catch (UpdateOperationFailedException) {
+                return Problem();
+            }
         }
 
         [HttpDelete("{id}")]
@@ -73,10 +77,14 @@ namespace Api.Controllers
             try
             {
                 await _publisherService.DeletePublisherAsync(id);
+                return Ok();
             }
-            catch (DeleteOperationFailedException) { }
-            catch (DeleteIsForbiddenException) { }
-            return Ok();
+            catch (DeleteOperationFailedException) {
+                return Problem();
+            }
+            catch (DeleteIsForbiddenException) {
+                return Forbid();
+            }
         }
     }
 }

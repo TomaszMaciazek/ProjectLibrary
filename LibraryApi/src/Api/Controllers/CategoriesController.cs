@@ -16,7 +16,6 @@ namespace Api.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
-
         public CategoriesController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
@@ -48,9 +47,11 @@ namespace Api.Controllers
             try
             {
                 await _categoryService.AddCategoryAsync(categoryVM);
+                return Ok();
             }
-            catch (AddOperationFailedException) { }
-            return Ok();
+            catch (AddOperationFailedException) {
+                return Problem();
+            }
         }
 
         [HttpPut]
@@ -61,9 +62,11 @@ namespace Api.Controllers
             try
             {
                 await _categoryService.UpdateCategoryAsync(categoryVM);
+                return Ok();
             }
-            catch (UpdateOperationFailedException) { }
-            return Ok();
+            catch (UpdateOperationFailedException) {
+                return Problem();
+            }
         }
 
         [HttpDelete("{id}")]
@@ -74,10 +77,14 @@ namespace Api.Controllers
             try
             {
                 await _categoryService.DeleteCategoryAsync(id);
+                return Ok();
             }
-            catch (DeleteOperationFailedException) { }
-            catch (DeleteIsForbiddenException) { }
-            return Ok();
+            catch (DeleteOperationFailedException) {
+                return Problem();
+            }
+            catch (DeleteIsForbiddenException) {
+                return Forbid();
+            }
         }
     }
 }

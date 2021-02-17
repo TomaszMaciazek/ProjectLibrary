@@ -73,9 +73,11 @@ namespace Api.Controllers
             try
             {
                 await _bookService.AddBookAsync(bookVM);
+                return Ok();
             }
-            catch (AddOperationFailedException) { }
-            return Ok();
+            catch (AddOperationFailedException) {
+                return Problem();
+            }
         }
 
         [HttpPut]
@@ -86,9 +88,11 @@ namespace Api.Controllers
             try
             {
                 await _bookService.UpdateBookAsync(bookVM);
+                return Ok();
             }
-            catch (UpdateOperationFailedException) { }
-            return Ok();
+            catch (UpdateOperationFailedException) {
+                return Problem();
+            }
         }
 
         [HttpDelete("{id}")]
@@ -99,10 +103,14 @@ namespace Api.Controllers
             try
             {
                 await _bookService.DeleteBookAsync(id);
+                return Ok();
             }
-            catch (DeleteIsForbiddenException) { }
-            catch (DeleteOperationFailedException) { }
-            return Ok();
+            catch (DeleteIsForbiddenException) {
+                return Forbid();
+            }
+            catch (DeleteOperationFailedException) {
+                return Problem();
+            }
         }
     }
 }

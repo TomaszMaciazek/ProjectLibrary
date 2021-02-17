@@ -48,9 +48,11 @@ namespace Api.Controllers
             try
             {
                 await _borrowingService.AddBorrowingAsync(borrowingVM);
+                return Ok();
             }
-            catch (AddOperationFailedException) { }
-            return Ok();
+            catch (AddOperationFailedException) {
+                return Problem();
+            }
         }
         [HttpPut]
         [Description("Update borrowing in database")]
@@ -60,9 +62,11 @@ namespace Api.Controllers
             try
             {
                 await _borrowingService.UpdateBorrowingAsync(borrowingVM);
+                return Ok();
             }
-            catch (UpdateOperationFailedException) { }
-            return Ok();
+            catch (UpdateOperationFailedException) {
+                return Problem();
+            }
         }
 
         [HttpDelete("{id}")]
@@ -73,9 +77,11 @@ namespace Api.Controllers
             try
             {
                 await _borrowingService.DeleteBorrowingAsync(id);
+                return Ok();
             }
-            catch (DeleteOperationFailedException) { }
-            return Ok();
+            catch (DeleteOperationFailedException) {
+                return Problem();
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Domain.Identity
         public int? ReservationsLimit { get; set; }
         public string CardNumber { get; set; }
         public string Name { get; set; }
+        public bool IsActive { get; set; }
         public ICollection<Borrowing> Borrowings { get; set; }
         public ICollection<Reservation> Reservations { get; set; }
         public ICollection<ProlongRequest> ProlongRequests { get; set; }

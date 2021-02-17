@@ -42,9 +42,11 @@ namespace Api.Controllers
             try
             {
                 await _prolongRequestService.AddProlongRequestAsync(prolongRequesrVM);
+                return Ok();
             }
-            catch (AddOperationFailedException) { }
-            return Ok();
+            catch (AddOperationFailedException) {
+                return Problem();
+            }
         }
 
         [HttpPut]
@@ -55,9 +57,11 @@ namespace Api.Controllers
             try
             {
                 await _prolongRequestService.UpdateProlongRequestAsync(prolongRequestVM);
+                return Ok();
             }
-            catch (UpdateOperationFailedException) { }
-            return Ok();
+            catch (UpdateOperationFailedException) {
+                return Problem();
+            }
         }
 
         [HttpDelete("{id}")]
@@ -68,9 +72,11 @@ namespace Api.Controllers
             try
             {
                 await _prolongRequestService.DeleteProlongRequestAsync(id);
+                return Ok();
             }
-            catch (DeleteOperationFailedException) { }
-            return Ok();
+            catch (DeleteOperationFailedException) {
+                return Problem();
+            }
         }
     }
 }

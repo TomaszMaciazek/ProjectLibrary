@@ -66,9 +66,11 @@ namespace Api.Controllers
             try
             {
                 await _reservationService.AddReservationAsync(reservationVm);
+                return Ok();
             }
-            catch (AddOperationFailedException) { }
-            return Ok();
+            catch (AddOperationFailedException) {
+                return Problem();
+            }
         }
 
         [HttpPut]
@@ -79,9 +81,11 @@ namespace Api.Controllers
             try
             {
                 await _reservationService.UpdateReservationAsync(reservationVm);
+                return Ok();
             }
-            catch (UpdateOperationFailedException) { }
-            return Ok();
+            catch (UpdateOperationFailedException) {
+                return Problem();
+            }
         }
 
         [HttpDelete("{id}")]
@@ -92,9 +96,11 @@ namespace Api.Controllers
             try
             {
                 await _reservationService.DeleteReservationAsync(id);
+                return Ok();
             }
-            catch (DeleteOperationFailedException) { }
-            return Ok();
+            catch (DeleteOperationFailedException) {
+                return Problem();
+            }
         }
     }
 }

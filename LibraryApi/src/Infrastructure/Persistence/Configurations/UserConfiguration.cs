@@ -17,8 +17,9 @@ namespace Infrastructure.Persistence.Configurations
                         UserName = "admin",
                         PasswordHash = passwordHasher.HashPassword(null, "admin"),
                         NormalizedUserName = "ADMIN",
+                        IsActive = true
                     }
-                ) ;
+                );
         }
     }
 }

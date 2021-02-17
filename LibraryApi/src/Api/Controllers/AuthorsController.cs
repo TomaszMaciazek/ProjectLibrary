@@ -47,9 +47,12 @@ namespace Api.Controllers
             try
             {
                 await _authorService.AddAuthorAsync(authorVM);
+                return Ok();
+
             }
-            catch (AddOperationFailedException) { }
-            return Ok();
+            catch (AddOperationFailedException) {
+                return Problem();
+            }
         }
 
         [HttpPut]
@@ -60,9 +63,11 @@ namespace Api.Controllers
             try
             {
                 await _authorService.UpdateAuthorAsync(authorVM);
+                return Ok();
             }
-            catch (UpdateOperationFailedException) { }
-            return Ok();
+            catch (UpdateOperationFailedException) {
+                return Problem();
+            }
         }
 
         [HttpDelete("{id}")]
@@ -73,10 +78,14 @@ namespace Api.Controllers
             try
             {
                 await _authorService.DeleteAuthorAsync(id);
+                return Ok();
             }
-            catch (DeleteOperationFailedException) { }
-            catch (DeleteIsForbiddenException) { }
-            return Ok();
+            catch (DeleteOperationFailedException) {
+                return Problem();
+            }
+            catch (DeleteIsForbiddenException) {
+                return Forbid();
+            }
         }
     }
 }
