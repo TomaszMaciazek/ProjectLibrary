@@ -28,7 +28,7 @@ namespace Api.Controllers
         [HttpGet]
         [Description("Get all prolong requests")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<ActionResult<ICollection<ProlongRequestDto>>> Get()
+        public async Task<ActionResult<IEnumerable<ProlongRequestDto>>> Get()
         {
             var requests = await _prolongRequestService.GetAllProlongRequestsAsync();
             return Ok(requests);
@@ -67,7 +67,7 @@ namespace Api.Controllers
         [HttpDelete("{id}")]
         [Description("Delete prolong request from database")]
         [Authorize(Roles = "Admin, Librarian, Reader")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try
             {

@@ -25,7 +25,7 @@ namespace Api.Controllers
         [HttpGet]
         [Description("Get all reservations")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<ActionResult<ICollection<ReservationDto>>> Get()
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> Get()
         {
             var reservations = await _reservationService.GetAllReservationsAsync();
             return Ok(reservations);
@@ -34,7 +34,7 @@ namespace Api.Controllers
         [HttpGet("awaitingReservations")]
         [Description("Get all awaiting reservations")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<ActionResult<ICollection<ReservationDto>>> GetAwaitingReservations()
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetAwaitingReservations()
         {
             var reservations = await _reservationService.GetAllAwaitingReservationsAsync();
             return Ok(reservations);
@@ -43,7 +43,7 @@ namespace Api.Controllers
         [HttpGet("{id}")]
         [Description("Get all user reservations")]
         [Authorize(Roles = "Admin, Librarian, Reader")]
-        public async Task<ActionResult<ICollection<ReservationDto>>> GetUserReservations(int id)
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserReservations([FromRoute] int id)
         {
             var reservations = await _reservationService.GetAllUserReservationsAsync(id);
             return Ok(reservations);
@@ -52,7 +52,7 @@ namespace Api.Controllers
         [HttpGet("awaitingReservations/{id}")]
         [Description("Get all user reservations")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<ActionResult<ICollection<ReservationDto>>> GetUserAwaitingReservations(int id)
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserAwaitingReservations([FromRoute] int id)
         {
             var reservations = await _reservationService.GetAllUserAwaitingReservationsAsync(id);
             return Ok(reservations);
@@ -91,7 +91,7 @@ namespace Api.Controllers
         [HttpDelete("{id}")]
         [Description("Delete reservation from database")]
         [Authorize(Roles = "Admin, Librarian, Reader")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try
             {

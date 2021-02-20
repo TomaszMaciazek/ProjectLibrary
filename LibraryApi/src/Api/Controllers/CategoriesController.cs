@@ -24,7 +24,7 @@ namespace Api.Controllers
         [HttpGet]
         [Description("Get all categories")]
         [AllowAnonymous]
-        public async Task<ActionResult<ICollection<CategoryDto>>> Get()
+        public async Task<ActionResult<IEnumerable<CategoryDto>>> Get()
         {
             var categories = await _categoryService.GetAllCategoriesAsync();
             return Ok(categories);
@@ -33,9 +33,13 @@ namespace Api.Controllers
         [HttpGet("{id}")]
         [Description("Get category by id")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<ActionResult<CategoryDto>> Get(int id)
+        public async Task<ActionResult<CategoryDto>> Get([FromRoute] int id)
         {
             var category = await _categoryService.GetCategoryByIdAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
             return Ok(category);
         }
 
@@ -72,7 +76,7 @@ namespace Api.Controllers
         [HttpDelete("{id}")]
         [Description("Delete category from database")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try
             {

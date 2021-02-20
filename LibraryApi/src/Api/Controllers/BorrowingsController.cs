@@ -25,7 +25,7 @@ namespace Api.Controllers
         [HttpGet]
         [Description("Get all borrowings")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<ActionResult<ICollection<BorrowingDto>>> Get()
+        public async Task<ActionResult<IEnumerable<BorrowingDto>>> Get()
         {
             var borrowings = await _borrowingService.GetAllBorrowingsAsync();
             return Ok(borrowings);
@@ -34,9 +34,13 @@ namespace Api.Controllers
         [HttpGet("{id}")]
         [Description("Get borrowing by id")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<ActionResult<ICollection<BorrowingDto>>> Get(int id)
+        public async Task<ActionResult<IEnumerable<BorrowingDto>>> Get([FromRoute] int id)
         {
             var borrowing = await _borrowingService.GetBorrowingByIdAsync(id);
+            if (borrowing == null)
+            {
+                return NotFound();
+            }
             return Ok(borrowing);
         }
 
@@ -72,7 +76,7 @@ namespace Api.Controllers
         [HttpDelete("{id}")]
         [Description("Delete borrowing from Database")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try
             {

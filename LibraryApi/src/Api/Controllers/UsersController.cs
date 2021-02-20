@@ -27,7 +27,7 @@ namespace Api.Controllers
         [HttpGet("Librarians")]
         [Description("Get all librarians")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetLibrarians()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetLibrarians()
         {
             var librarians = await _userService.GetAllLibrariansAsync();
             return Ok(librarians);
@@ -36,7 +36,7 @@ namespace Api.Controllers
         [HttpGet("Readers")]
         [Description("Get all readers")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<IActionResult> GetReaders()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetReaders()
         {
             var readers = await _userService.GetAllReadersAsync();
             return Ok(readers);
@@ -45,18 +45,26 @@ namespace Api.Controllers
         [HttpGet("Readers/{id}")]
         [Description("Get reader by id")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<ActionResult<UserDto>> GetReaderById(int id)
+        public async Task<ActionResult<UserDto>> GetReaderById([FromRoute] int id)
         {
             var reader = await _userService.GetUserByIdAsync(id);
+            if (reader == null)
+            {
+                return NotFound();
+            }
             return Ok(reader);
         }
 
         [HttpGet("Librarians/{id}")]
         [Description("Get librarian by id")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<UserDto>> GetLibrarianById(int id)
+        public async Task<ActionResult<UserDto>> GetLibrarianById([FromRoute]int id)
         {
             var librarian = await _userService.GetUserByIdAsync(id);
+            if (librarian == null)
+            {
+                return NotFound();
+            }
             return Ok(librarian);
         }
 
@@ -111,9 +119,9 @@ namespace Api.Controllers
 
         [HttpPut]
         [Description("Make librarian not active")]
-        [Route("[action]")]
+        [Route("[action]/{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeactivateLibrarian(int id)
+        public async Task<IActionResult> DeactivateLibrarian([FromRoute] int id)
         {
             if(await _userService.IsLibrarian(id))
             {
@@ -124,9 +132,9 @@ namespace Api.Controllers
 
         [HttpPut]
         [Description("Make librarian active")]
-        [Route("[action]")]
+        [Route("[action]/{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> ActivateLibrarian(int id)
+        public async Task<IActionResult> ActivateLibrarian([FromRoute] int id)
         {
             if (await _userService.IsLibrarian(id))
             {
@@ -137,9 +145,9 @@ namespace Api.Controllers
 
         [HttpPut]
         [Description("Make reader not active")]
-        [Route("[action]")]
+        [Route("[action]/{id}")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<IActionResult> DeactivateReader(int id)
+        public async Task<IActionResult> DeactivateReader([FromRoute] int id)
         {
             if (await _userService.IsReader(id))
             {
@@ -150,9 +158,9 @@ namespace Api.Controllers
 
         [HttpPut]
         [Description("Make reader active")]
-        [Route("[action]")]
+        [Route("[action]/{id}")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<IActionResult> ActivateReader(int id)
+        public async Task<IActionResult> ActivateReader([FromRoute] int id)
         {
             if (await _userService.IsReader(id))
             {
@@ -164,7 +172,7 @@ namespace Api.Controllers
         [HttpDelete("{id}")]
         [Description("Delete user")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try
             {

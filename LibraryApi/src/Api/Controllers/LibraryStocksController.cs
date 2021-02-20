@@ -59,9 +59,13 @@ namespace Api.Controllers
         [HttpGet("{id}")]
         [Description("Get book by id")]
         [AllowAnonymous]
-        public async Task<ActionResult<BookWithDetalisDto>> Get(int id)
+        public async Task<ActionResult<BookWithDetalisDto>> Get([FromRoute] int id)
         {
             var book = await _bookService.GetBookByIdAsync(id);
+            if (book == null)
+            {
+                return NotFound();
+            }
             return Ok(book);
         }
 
@@ -98,7 +102,7 @@ namespace Api.Controllers
         [HttpDelete("{id}")]
         [Description("Delete book from database")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try
             {

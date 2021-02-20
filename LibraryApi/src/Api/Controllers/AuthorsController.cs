@@ -26,16 +26,20 @@ namespace Api.Controllers
         [HttpGet]
         [Description("Get all authors")]
         [AllowAnonymous]
-        public async Task<ActionResult<ICollection<AuthorDto>>> Get(){
+        public async Task<ActionResult<IEnumerable<AuthorDto>>> Get(){
             var authors = await _authorService.GetAllAuthorsAsync();
             return Ok(authors);
         }
 
         [HttpGet("{id}")]
         [Description("Get author by id")]
-        public async Task<ActionResult<AuthorDto>> Get(int id)
+        public async Task<ActionResult<AuthorDto>> Get([FromRoute] int id)
         {
             var author = await _authorService.GetAuthorByIdAsync(id);
+            if(author == null)
+            {
+                return NotFound();
+            }
             return Ok(author);
         }
 
@@ -73,7 +77,7 @@ namespace Api.Controllers
         [HttpDelete("{id}")]
         [Description("Delete author from database")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try
             {
