@@ -50,8 +50,8 @@ namespace Api.Controllers
         {
             try
             {
-                await _publisherService.AddPublisherAsync(publisherVM);
-                return Ok();
+                var publisher = await _publisherService.AddPublisherAsync(publisherVM);
+                return Created($"api/publishers/{publisher.Id}",null);
             }
             catch (AddOperationFailedException) {
                 return Problem();
@@ -66,7 +66,7 @@ namespace Api.Controllers
             try
             {
                 await _publisherService.UpdatePublisherAsync(publisherVM);
-                return Ok();
+                return NoContent();
             }
             catch (UpdateOperationFailedException) {
                 return Problem();

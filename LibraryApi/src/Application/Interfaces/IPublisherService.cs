@@ -8,7 +8,7 @@ namespace Application.Interfaces
 {
     public interface IPublisherService
     {
-        Task AddPublisherAsync(AddPublisherVM publisher);
+        Task<PublisherDto> AddPublisherAsync(AddPublisherVM publisher);
         Task DeletePublisherAsync(int id);
         Task<ICollection<PublisherDto>> GetAllPublishersAsync();
         Task<PublisherWithBooksDto> GetPublisherByIdAsync(int id);

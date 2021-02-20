@@ -35,7 +35,7 @@ namespace Application.Services
             => _mapper.Map<ICollection<BaseBookDto>>(await _bookRepository.GetAllAvailableBooksAsync(filterString));
         public async Task<BookWithDetalisDto> GetBookByIdAsync(int id)
             => _mapper.Map<BookWithDetalisDto>(await _bookRepository.GetBookByIdAsync(id));
-        public async Task AddBookAsync(AddBookVM newBook)
+        public async Task<BookWithDetalisDto> AddBookAsync(AddBookVM newBook)
         {
             try
             {
@@ -50,6 +50,7 @@ namespace Application.Services
                     };
                     await _authorAndBookRepository.AddAsync(newRelation);
                 }
+                return _mapper.Map<BookWithDetalisDto>(mappedNewBook);
             }
             catch (Exception)
             {

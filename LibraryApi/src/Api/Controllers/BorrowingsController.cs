@@ -51,8 +51,8 @@ namespace Api.Controllers
         {
             try
             {
-                await _borrowingService.AddBorrowingAsync(borrowingVM);
-                return Ok();
+                var borrowing = await _borrowingService.AddBorrowingAsync(borrowingVM);
+                return Created($"api/borrowings/{borrowing.Id}",null);
             }
             catch (AddOperationFailedException) {
                 return Problem();
@@ -66,7 +66,7 @@ namespace Api.Controllers
             try
             {
                 await _borrowingService.UpdateBorrowingAsync(borrowingVM);
-                return Ok();
+                return NoContent();
             }
             catch (UpdateOperationFailedException) {
                 return Problem();

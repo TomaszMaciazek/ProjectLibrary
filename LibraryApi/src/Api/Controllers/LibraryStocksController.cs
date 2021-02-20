@@ -76,8 +76,8 @@ namespace Api.Controllers
         {
             try
             {
-                await _bookService.AddBookAsync(bookVM);
-                return Ok();
+                var book = await _bookService.AddBookAsync(bookVM);
+                return Created($"api/libraryStocks/{book.Id}",null);
             }
             catch (AddOperationFailedException) {
                 return Problem();
@@ -92,7 +92,7 @@ namespace Api.Controllers
             try
             {
                 await _bookService.UpdateBookAsync(bookVM);
-                return Ok();
+                return NoContent();
             }
             catch (UpdateOperationFailedException) {
                 return Problem();

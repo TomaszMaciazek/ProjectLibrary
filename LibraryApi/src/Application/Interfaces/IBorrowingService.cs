@@ -8,7 +8,7 @@ namespace Application.Interfaces
 {
     public interface IBorrowingService
     {
-        Task AddBorrowingAsync(AddBorrowingVM newBorrowing);
+        Task<BorrowingDto> AddBorrowingAsync(AddBorrowingVM newBorrowing);
         Task DeleteBorrowingAsync(int id);
         Task UpdateBorrowingAsync(UpdateBorrowingVM borrowingVM);
         Task<ICollection<BorrowingDto>> GetAllBorrowingsAsync();

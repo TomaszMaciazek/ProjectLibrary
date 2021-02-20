@@ -28,12 +28,13 @@ namespace Application.Services
         public async Task<AuthorWithBooksDto> GetAuthorByIdAsync(int id)
             => _mapper.Map<AuthorWithBooksDto>(await _authorRepository.GetAuthorByIdAsync(id));
 
-        public async Task AddAuthorAsync(AddAuthorVM author)
+        public async Task<AuthorDto> AddAuthorAsync(AddAuthorVM author)
         {
             try
             {
                 var mappedAuthor = _mapper.Map<Author>(author);
                 await _authorRepository.AddAsync(mappedAuthor);
+                return _mapper.Map<AuthorDto>(mappedAuthor);
             }
             catch (Exception)
             {

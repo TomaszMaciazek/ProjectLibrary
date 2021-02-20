@@ -34,6 +34,19 @@ namespace Api.Controllers
             return Ok(requests);
         }
 
+        [HttpGet("{id}")]
+        [Description("Get prolong request by id")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public async Task<ActionResult<ProlongRequestDto>> Get([FromRoute] int id)
+        {
+            var request = await _prolongRequestService.GetProlongRequestByIdAsync(id);
+            if(request == null)
+            {
+                return NotFound();
+            }
+            return Ok(request);
+        }
+
         [HttpPost]
         [Description("Add prolong request to database")]
         [Authorize(Roles = "Reader")]
@@ -41,8 +54,8 @@ namespace Api.Controllers
         {
             try
             {
-                await _prolongRequestService.AddProlongRequestAsync(prolongRequesrVM);
-                return Ok();
+                var request = await _prolongRequestService.AddProlongRequestAsync(prolongRequesrVM);
+                return Created($"api/prolongRequests/{request.Id}",null);
             }
             catch (AddOperationFailedException) {
                 return Problem();
@@ -57,7 +70,7 @@ namespace Api.Controllers
             try
             {
                 await _prolongRequestService.UpdateProlongRequestAsync(prolongRequestVM);
-                return Ok();
+                return NoContent();
             }
             catch (UpdateOperationFailedException) {
                 return Problem();

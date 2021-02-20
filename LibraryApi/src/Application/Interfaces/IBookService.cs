@@ -8,7 +8,7 @@ namespace Application.Interfaces
 {
     public interface IBookService
     {
-        Task AddBookAsync(AddBookVM newBook);
+        Task<BookWithDetalisDto> AddBookAsync(AddBookVM newBook);
         Task DeleteBookAsync(int id);
         Task<ICollection<BaseBookDto>> GetAllAvailableBooksAsync(string filterString);
         Task<ICollection<BaseBookDto>> GetAllBooksAsync(string filterString);

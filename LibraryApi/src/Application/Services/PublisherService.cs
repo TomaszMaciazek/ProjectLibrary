@@ -28,12 +28,13 @@ namespace Application.Services
         public async Task<PublisherWithBooksDto> GetPublisherByIdAsync(int id)
             => _mapper.Map<PublisherWithBooksDto>(await _publisherRepository.GetPublisherByIdAsync(id));
 
-        public async Task AddPublisherAsync(AddPublisherVM publisher)
+        public async Task<PublisherDto> AddPublisherAsync(AddPublisherVM publisher)
         {
             try
             {
                 var mappedPublsiher = _mapper.Map<Publisher>(publisher);
                 await _publisherRepository.AddAsync(mappedPublsiher);
+                return _mapper.Map<PublisherDto>(mappedPublsiher);
             }
             catch (Exception)
             {

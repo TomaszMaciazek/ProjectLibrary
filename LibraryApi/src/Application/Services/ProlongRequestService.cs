@@ -32,12 +32,13 @@ namespace Application.Services
         public async Task<ProlongRequestDto> GetProlongRequestByIdAsync(int id)
             => _mapper.Map<ProlongRequestDto>(await _prolongRequestRepository.GetProlongRequestByIdAsync(id));
 
-        public async Task AddProlongRequestAsync(AddProlongRequestVM model)
+        public async Task<ProlongRequestDto> AddProlongRequestAsync(AddProlongRequestVM model)
         {
             try
             {
                 var mappedRequest = _mapper.Map<ProlongRequest>(model);
                 await _prolongRequestRepository.AddAsync(mappedRequest);
+                return _mapper.Map<ProlongRequestDto>(mappedRequest);
             }
             catch (Exception)
             {

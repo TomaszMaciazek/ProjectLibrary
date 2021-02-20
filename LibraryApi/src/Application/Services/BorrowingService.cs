@@ -63,12 +63,13 @@ namespace Application.Services
             }
         }
 
-        public async Task AddBorrowingAsync(AddBorrowingVM newBorrowing)
+        public async Task<BorrowingDto> AddBorrowingAsync(AddBorrowingVM newBorrowing)
         {
             try
             {
                 var mappedBorrowing = _mapper.Map<Borrowing>(newBorrowing);
                 await _borrowingRepository.AddAsync(mappedBorrowing);
+                return _mapper.Map<BorrowingDto>(mappedBorrowing);
             }
             catch (Exception)
             {

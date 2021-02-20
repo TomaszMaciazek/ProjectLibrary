@@ -8,7 +8,7 @@ namespace Application.Interfaces
 {
     public interface ICategoryService
     {
-        Task AddCategoryAsync(AddCategoryVM category);
+        Task<CategoryDto> AddCategoryAsync(AddCategoryVM category);
         Task DeleteCategoryAsync(int id);
         Task<ICollection<CategoryDto>> GetAllCategoriesAsync();
         Task<CategoryWithBooksDto> GetCategoryByIdAsync(int id);

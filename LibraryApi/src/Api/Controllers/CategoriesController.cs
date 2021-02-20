@@ -50,8 +50,8 @@ namespace Api.Controllers
         {
             try
             {
-                await _categoryService.AddCategoryAsync(categoryVM);
-                return Ok();
+                var category = await _categoryService.AddCategoryAsync(categoryVM);
+                return Created($"api/categories/{category.Id}",null);
             }
             catch (AddOperationFailedException) {
                 return Problem();
@@ -66,7 +66,7 @@ namespace Api.Controllers
             try
             {
                 await _categoryService.UpdateCategoryAsync(categoryVM);
-                return Ok();
+                return NoContent();
             }
             catch (UpdateOperationFailedException) {
                 return Problem();

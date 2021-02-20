@@ -8,7 +8,7 @@ namespace Application.Interfaces
 {
     public interface IProlongRequestService
     {
-        Task AddProlongRequestAsync(AddProlongRequestVM model);
+        Task<ProlongRequestDto> AddProlongRequestAsync(AddProlongRequestVM model);
         Task DeleteProlongRequestAsync(int id);
         Task<ICollection<ProlongRequestDto>> GetAllAwaitingProlongRequestsAsync();
         Task<ICollection<ProlongRequestDto>> GetAllProlongRequestsAsync();

@@ -8,7 +8,7 @@ namespace Application.Interfaces
 {
     public interface IAuthorService
     {
-        Task AddAuthorAsync(AddAuthorVM author);
+        Task<AuthorDto> AddAuthorAsync(AddAuthorVM author);
         Task DeleteAuthorAsync(int id);
         Task<ICollection<AuthorDto>> GetAllAuthorsAsync();
         Task<AuthorWithBooksDto> GetAuthorByIdAsync(int id);

@@ -50,8 +50,8 @@ namespace Api.Controllers
         {
             try
             {
-                await _authorService.AddAuthorAsync(authorVM);
-                return Ok();
+                var author = await _authorService.AddAuthorAsync(authorVM);
+                return Created($"api/authors/{author.Id}",null);
 
             }
             catch (AddOperationFailedException) {
@@ -67,7 +67,7 @@ namespace Api.Controllers
             try
             {
                 await _authorService.UpdateAuthorAsync(authorVM);
-                return Ok();
+                return NoContent();
             }
             catch (UpdateOperationFailedException) {
                 return Problem();

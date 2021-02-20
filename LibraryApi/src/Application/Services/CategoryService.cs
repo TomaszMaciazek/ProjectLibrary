@@ -26,12 +26,13 @@ namespace Application.Services
             => _mapper.Map<ICollection<CategoryDto>>(await _categoryRepository.GetAllCategoriesAsync());
         public async Task<CategoryWithBooksDto> GetCategoryByIdAsync(int id)
             => _mapper.Map<CategoryWithBooksDto>(await _categoryRepository.GetCategoryByIdAsync(id));
-        public async Task AddCategoryAsync(AddCategoryVM category)
+        public async Task<CategoryDto> AddCategoryAsync(AddCategoryVM category)
         {
             try
             {
                 var mappedCategory = _mapper.Map<Category>(category);
                 await _categoryRepository.AddAsync(mappedCategory);
+                return _mapper.Map<CategoryDto>(mappedCategory);
             }
             catch (Exception)
             {
