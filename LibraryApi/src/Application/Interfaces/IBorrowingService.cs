@@ -9,8 +9,8 @@ namespace Application.Interfaces
     public interface IBorrowingService
     {
         Task<BorrowingDto> AddBorrowingAsync(AddBorrowingVM newBorrowing);
-        Task DeleteBorrowingAsync(int id);
-        Task UpdateBorrowingAsync(UpdateBorrowingVM borrowingVM);
+        Task<bool> DeleteBorrowingAsync(int id);
+        Task<bool> UpdateBorrowingAsync(UpdateBorrowingVM borrowingVM);
         Task<ICollection<BorrowingDto>> GetAllBorrowingsAsync();
         Task<ICollection<BorrowingDto>> GetAllNotReturnedBorrowingsAsync();
         Task<ICollection<BorrowingDto>> GetAllUserBorrowingsAsync(int userId);

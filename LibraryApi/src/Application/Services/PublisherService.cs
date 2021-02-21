@@ -41,15 +41,20 @@ namespace Application.Services
                 throw new AddOperationFailedException();
             }
         }
-        public async Task UpdatePublisherAsync(UpdatePublisherVM publisher)
+        public async Task<bool> UpdatePublisherAsync(UpdatePublisherVM publisher)
         {
             try
             {
                 var entity = await _publisherRepository.GetPublisherByIdAsync(publisher.Id);
+                if(entity == null)
+                {
+                    return false;
+                }
                 entity.Name = publisher.Name;
                 entity.ModificationDate = publisher.ModyficationDate;
                 entity.ModifiedBy = publisher.ModifiedBy;
                 await _publisherRepository.UpdateAsync(entity);
+                return true;
             }
             catch (Exception)
             {
@@ -57,11 +62,18 @@ namespace Application.Services
             }
         }
 
-        public async Task DeletePublisherAsync(int id)
+        public async Task<bool> DeletePublisherAsync(int id)
         {
             try
             {
-                await _publisherRepository.DeleteAsync(id);
+                var publisher = await _publisherRepository.GetPublisherByIdAsync(id);
+                if(publisher == null)
+                {
+                    return false;
+                }
+                await _publisherRepository.DeleteAsync(publisher);
+                return true;
+
             }
             catch (InvalidOperationException)
             {

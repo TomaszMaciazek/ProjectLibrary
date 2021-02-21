@@ -73,8 +73,12 @@ namespace Api.Controllers
             }
             try
             {
-                await _categoryService.UpdateCategoryAsync(categoryVM);
-                return NoContent();
+                var result = await _categoryService.UpdateCategoryAsync(categoryVM);
+                if (result)
+                {
+                    return NoContent();
+                }
+                return NotFound();
             }
             catch (UpdateOperationFailedException) {
                 return Problem();
@@ -88,8 +92,12 @@ namespace Api.Controllers
         {
             try
             {
-                await _categoryService.DeleteCategoryAsync(id);
-                return Ok();
+                var result = await _categoryService.DeleteCategoryAsync(id);
+                if (result)
+                {
+                    return NoContent();
+                }
+                return NotFound();
             }
             catch (DeleteOperationFailedException) {
                 return Problem();

@@ -46,15 +46,20 @@ namespace Application.Services
             }
         }
 
-        public async Task UpdateProlongRequestAsync(UpdateProlongRequestVM requestVM)
+        public async Task<bool> UpdateProlongRequestAsync(UpdateProlongRequestVM requestVM)
         {
             try
             {
                 var request = await _prolongRequestRepository.GetProlongRequestByIdAsync(requestVM.Id);
+                if(request == null)
+                {
+                    return false;
+                }
                 request.Status = (StatusEnum)requestVM.NewStatus;
                 request.ModificationDate = requestVM.ModyficationDate;
                 request.ModifiedBy = requestVM.ModifiedBy;
                 await _prolongRequestRepository.UpdateAsync(request);
+                return true;
             }
             catch (Exception)
             {
@@ -62,11 +67,17 @@ namespace Application.Services
             }
         }
 
-        public async Task DeleteProlongRequestAsync(int id)
+        public async Task<bool> DeleteProlongRequestAsync(int id)
         {
             try
             {
-                await _prolongRequestRepository.DeleteAsync(id);
+                var request = await _prolongRequestRepository.GetProlongRequestByIdAsync(id);
+                if(request == null)
+                {
+                    return false;
+                }
+                await _prolongRequestRepository.DeleteAsync(request);
+                return true;
             }
             catch (Exception)
             {

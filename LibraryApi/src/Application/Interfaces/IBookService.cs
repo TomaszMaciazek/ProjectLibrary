@@ -9,10 +9,10 @@ namespace Application.Interfaces
     public interface IBookService
     {
         Task<BookWithDetalisDto> AddBookAsync(AddBookVM newBook);
-        Task DeleteBookAsync(int id);
+        Task<bool> DeleteBookAsync(int id);
         Task<ICollection<BaseBookDto>> GetAllAvailableBooksAsync(string filterString);
         Task<ICollection<BaseBookDto>> GetAllBooksAsync(string filterString);
         Task<BookWithDetalisDto> GetBookByIdAsync(int id);
-        Task UpdateBookAsync(UpdateBookVM book);
+        Task<bool> UpdateBookAsync(UpdateBookVM book);
     }
 }

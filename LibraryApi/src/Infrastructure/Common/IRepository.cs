@@ -17,7 +17,7 @@ namespace Infrastructure.Common
         /// </summary>
         /// <param name="id">Id of entity that is being removed from DbSet</param>
         /// <returns>A task that represents the asynchronous removing entity from DbSet operation</returns>
-        Task DeleteAsync(int id);
+        Task DeleteAsync(Entity entity);
 
         /// <summary>
         /// Method updates entity in DbSet

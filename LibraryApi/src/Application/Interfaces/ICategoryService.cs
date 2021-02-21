@@ -9,9 +9,9 @@ namespace Application.Interfaces
     public interface ICategoryService
     {
         Task<CategoryDto> AddCategoryAsync(AddCategoryVM category);
-        Task DeleteCategoryAsync(int id);
+        Task<bool> DeleteCategoryAsync(int id);
         Task<ICollection<CategoryDto>> GetAllCategoriesAsync();
         Task<CategoryWithBooksDto> GetCategoryByIdAsync(int id);
-        Task UpdateCategoryAsync(UpdateCategoryVM category);
+        Task<bool> UpdateCategoryAsync(UpdateCategoryVM category);
     }
 }

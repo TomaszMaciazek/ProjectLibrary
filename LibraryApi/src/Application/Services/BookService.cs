@@ -57,11 +57,15 @@ namespace Application.Services
                 throw new AddOperationFailedException();
             }
         }
-        public async Task UpdateBookAsync(UpdateBookVM book)
+        public async Task<bool> UpdateBookAsync(UpdateBookVM book)
         {
             try
             {
                 var entity = await _bookRepository.GetBookByIdAsync(book.Id);
+                if(entity == null)
+                {
+                    return false;
+                }
                 entity.Title = book.Title;
                 entity.PublisherId = book.PublisherId;
                 entity.ImageUrl = book.ImageUrl;
@@ -71,17 +75,24 @@ namespace Application.Services
                 entity.ModifiedBy = book.ModifiedBy;
                 await _authorAndBookRepository.ChangeBookRelationsAsync(book.AuthorsId, entity.Id);
                 await _bookRepository.UpdateAsync(entity);
+                return true;
             }
             catch (Exception)
             {
                 throw new UpdateOperationFailedException();
             }
         }
-        public async Task DeleteBookAsync(int id)
+        public async Task<bool> DeleteBookAsync(int id)
         {
             try
             {
-                await _bookRepository.DeleteAsync(id);
+                var book = await _bookRepository.GetBookByIdAsync(id);
+                if(book == null)
+                {
+                    return false;
+                }
+                await _bookRepository.DeleteAsync(book);
+                return true;
             }
             catch (Exception)
             {

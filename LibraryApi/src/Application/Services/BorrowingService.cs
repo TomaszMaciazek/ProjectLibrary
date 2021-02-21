@@ -78,16 +78,21 @@ namespace Application.Services
 
         }
 
-        public async Task UpdateBorrowingAsync(UpdateBorrowingVM borrowingVM)
+        public async Task<bool> UpdateBorrowingAsync(UpdateBorrowingVM borrowingVM)
         {
             try
             {
                 var borrowing = await _borrowingRepository.GetBorrowingByIdAsync(borrowingVM.Id);
+                if(borrowing == null)
+                {
+                    return false;
+                }
                 borrowing.ReturnedByUser = borrowingVM.ReturnedByUser ?? borrowing.ReturnedByUser;
                 borrowing.ExpirationDate = borrowingVM.NewExpirationDate ?? borrowing.ExpirationDate;
                 borrowing.ModificationDate = borrowingVM.ModyficationDate;
                 borrowing.ModifiedBy = borrowingVM.ModifiedBy;
                 await _borrowingRepository.UpdateAsync(borrowing);
+                return true;
             }
             catch (Exception)
             {
@@ -97,11 +102,17 @@ namespace Application.Services
 
 
 
-        public async Task DeleteBorrowingAsync(int id)
+        public async Task<bool> DeleteBorrowingAsync(int id)
         {
             try
             {
-                await _borrowingRepository.DeleteAsync(id);
+                var borrowing = await _borrowingRepository.GetBorrowingByIdAsync(id);
+                if(borrowing == null)
+                {
+                    return false;
+                }
+                await _borrowingRepository.DeleteAsync(borrowing);
+                return true;
             }
             catch (Exception)
             {

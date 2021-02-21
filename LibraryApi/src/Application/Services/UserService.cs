@@ -72,7 +72,7 @@ namespace Application.Services
                 await _signInController.SignOutAsync();
         }
 
-        public async Task CreateLibrarianAsync(CreateLibrarianVM newUser)
+        public async Task<UserDto> CreateLibrarianAsync(CreateLibrarianVM newUser)
         {
             try
             {
@@ -90,8 +90,11 @@ namespace Application.Services
                     if (resultRole != IdentityResult.Success)
                     {
                         await _userManager.DeleteAsync(user);
+                        return null;
                     }
+                    return _mapper.Map<UserDto>(user);
                 }
+                return null;
             }
             catch (Exception)
             {
@@ -100,7 +103,7 @@ namespace Application.Services
 
         }
 
-        public async Task CreateReaderAsync(CreateReaderVM newUser)
+        public async Task<UserDto> CreateReaderAsync(CreateReaderVM newUser)
         {
             try
             {
@@ -121,8 +124,10 @@ namespace Application.Services
                     if (resultRole != IdentityResult.Success)
                     {
                         await _userManager.DeleteAsync(user);
+                        return null;
                     }
                 }
+                return null;
             }
             catch (Exception)
             {
@@ -131,7 +136,7 @@ namespace Application.Services
 
         }
 
-        public async Task DeleteUserAsync(int id)
+        public async Task<bool> DeleteUserAsync(int id)
         {
             try
             {
@@ -144,7 +149,9 @@ namespace Application.Services
                 if (user != null)
                 {
                     await _userManager.DeleteAsync(user);
+                    return true;
                 }
+                return false;
             }
             catch (Exception)
             {
@@ -152,16 +159,21 @@ namespace Application.Services
             }
         }
 
-        public async Task MakeUserActive(int id)
+        public async Task<bool> MakeUserActive(int id)
         {
             try
             {
                 var user = await _userManager.FindByIdAsync(id.ToString());
-                if (user != null && !user.IsActive)
+                if(user == null)
+                {
+                    return false;
+                }
+                else if (!user.IsActive)
                 {
                     user.IsActive = true;
                     await _userManager.UpdateAsync(user);
                 }
+                return true;
             }
             catch (Exception)
             {
@@ -169,7 +181,7 @@ namespace Application.Services
             }
         }
 
-        public async Task MakeUserNotActive(int id)
+        public async Task<bool> MakeUserNotActive(int id)
         {
             try
             {
@@ -179,11 +191,16 @@ namespace Application.Services
                     throw new UpdateOperationFailedException();
                 }
                 var user = await _userManager.FindByIdAsync(id.ToString());
-                if (user != null && user.IsActive)
+                if(user == null)
+                {
+                    return false;
+                }
+                else if (user.IsActive)
                 {
                     user.IsActive = false;
                     await _userManager.UpdateAsync(user);
                 }
+                return true;
             }
             catch (Exception)
             {
@@ -222,7 +239,7 @@ namespace Application.Services
             return librarians;
         }
 
-        public async Task UpdateUserAsync(UpdateUserVM userToUpdate)
+        public async Task<bool> UpdateUserAsync(UpdateUserVM userToUpdate)
         {
             try
             {
@@ -235,7 +252,10 @@ namespace Application.Services
                         ? user.PasswordHash : hasher.HashPassword(user, userToUpdate.Password);
                     user.ReservationsLimit = userToUpdate.ReservationsLimit ?? user.ReservationsLimit;
                     user.BorrowingsLimit = userToUpdate.BorrowingsLimit ?? user.BorrowingsLimit;
+                    await _userManager.UpdateAsync(user);
+                    return true;
                 }
+                return false;
             }
             catch (Exception)
             {

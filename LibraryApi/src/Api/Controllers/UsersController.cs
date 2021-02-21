@@ -42,7 +42,7 @@ namespace Api.Controllers
             return Ok(readers);
         }
 
-        [HttpGet("Readers/{id}")]
+        [HttpGet("readers/{id}")]
         [Description("Get reader by id")]
         [Authorize(Roles = "Admin, Librarian")]
         public async Task<ActionResult<UserDto>> GetReaderById([FromRoute] int id)
@@ -55,7 +55,7 @@ namespace Api.Controllers
             return Ok(reader);
         }
 
-        [HttpGet("Librarians/{id}")]
+        [HttpGet("librarians/{id}")]
         [Description("Get librarian by id")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UserDto>> GetLibrarianById([FromRoute]int id)
@@ -87,8 +87,12 @@ namespace Api.Controllers
             {
                 return BadRequest(userVM);
             }
-            await _userService.CreateLibrarianAsync(userVM);
-            return Ok();
+            var user = await _userService.CreateLibrarianAsync(userVM);
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            return Created($"api/users/librarians/{user.Id}", null);
         }
 
         [HttpPost]
@@ -101,8 +105,12 @@ namespace Api.Controllers
             {
                 return BadRequest(userVM);
             }
-            await _userService.CreateReaderAsync(userVM);
-            return Ok();
+            var user = await _userService.CreateReaderAsync(userVM);
+            if(user == null)
+            {
+                return BadRequest();
+            }
+            return Created($"api/users/readers/{user.Id}",null);
         }
 
         [HttpPost]
@@ -133,9 +141,13 @@ namespace Api.Controllers
         {
             if(await _userService.IsLibrarian(id))
             {
-                await _userService.MakeUserNotActive(id);
+                var result = await _userService.MakeUserNotActive(id);
+                if (result)
+                {
+                    return NoContent();
+                }
             }
-            return Ok();
+            return NotFound();
         }
 
         [HttpPut]
@@ -146,9 +158,13 @@ namespace Api.Controllers
         {
             if (await _userService.IsLibrarian(id))
             {
-                await _userService.MakeUserActive(id);
+                var result = await _userService.MakeUserActive(id);
+                if (result)
+                {
+                    return NoContent();
+                }
             }
-            return Ok();
+            return NotFound();
         }
 
         [HttpPut]
@@ -159,9 +175,13 @@ namespace Api.Controllers
         {
             if (await _userService.IsReader(id))
             {
-                await _userService.MakeUserNotActive(id);
+                var result = await _userService.MakeUserNotActive(id);
+                if (result)
+                {
+                    return NoContent();
+                }
             }
-            return Ok();
+            return NotFound();
         }
 
         [HttpPut]
@@ -172,9 +192,13 @@ namespace Api.Controllers
         {
             if (await _userService.IsReader(id))
             {
-                await _userService.MakeUserActive(id);
+                var result = await _userService.MakeUserActive(id);
+                if (result)
+                {
+                    return NoContent();
+                }
             }
-            return Ok();
+            return NotFound();
         }
 
         [HttpDelete("{id}")]
@@ -184,7 +208,12 @@ namespace Api.Controllers
         {
             try
             {
-                await _userService.DeleteUserAsync(id);
+                var result = await _userService.DeleteUserAsync(id);
+                if (result)
+                {
+                    return NoContent();
+                }
+                return NotFound();
             }
             catch (DeleteOperationFailedException) { }
             catch (DeleteIsForbiddenException)

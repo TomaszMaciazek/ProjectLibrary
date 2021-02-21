@@ -9,10 +9,10 @@ namespace Application.Interfaces
     public interface IProlongRequestService
     {
         Task<ProlongRequestDto> AddProlongRequestAsync(AddProlongRequestVM model);
-        Task DeleteProlongRequestAsync(int id);
+        Task<bool> DeleteProlongRequestAsync(int id);
         Task<ICollection<ProlongRequestDto>> GetAllAwaitingProlongRequestsAsync();
         Task<ICollection<ProlongRequestDto>> GetAllProlongRequestsAsync();
         Task<ProlongRequestDto> GetProlongRequestByIdAsync(int id);
-        Task UpdateProlongRequestAsync(UpdateProlongRequestVM requestVM);
+        Task<bool> UpdateProlongRequestAsync(UpdateProlongRequestVM requestVM);
     }
 }

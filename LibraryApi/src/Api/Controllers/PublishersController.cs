@@ -73,8 +73,12 @@ namespace Api.Controllers
             }
             try
             {
-                await _publisherService.UpdatePublisherAsync(publisherVM);
-                return NoContent();
+                var result = await _publisherService.UpdatePublisherAsync(publisherVM);
+                if (result)
+                {
+                    return NoContent();
+                }
+                return NotFound();
             }
             catch (UpdateOperationFailedException) {
                 return Problem();
@@ -88,8 +92,12 @@ namespace Api.Controllers
         {
             try
             {
-                await _publisherService.DeletePublisherAsync(id);
-                return Ok();
+                var result = await _publisherService.DeletePublisherAsync(id);
+                if (result)
+                {
+                    return NoContent();
+                }
+                return NotFound();
             }
             catch (DeleteOperationFailedException) {
                 return Problem();

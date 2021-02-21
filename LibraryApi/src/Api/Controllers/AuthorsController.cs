@@ -74,8 +74,12 @@ namespace Api.Controllers
             }
             try
             {
-                await _authorService.UpdateAuthorAsync(authorVM);
-                return NoContent();
+                var result = await _authorService.UpdateAuthorAsync(authorVM);
+                if (result)
+                {
+                    return NoContent();
+                }
+                return NotFound();
             }
             catch (UpdateOperationFailedException) {
                 return Problem();
@@ -89,8 +93,12 @@ namespace Api.Controllers
         {
             try
             {
-                await _authorService.DeleteAuthorAsync(id);
-                return Ok();
+                var result = await _authorService.DeleteAuthorAsync(id);
+                if (result)
+                {
+                    return NoContent();
+                }
+                return NotFound();
             }
             catch (DeleteOperationFailedException) {
                 return Problem();

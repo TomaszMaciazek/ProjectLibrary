@@ -77,8 +77,12 @@ namespace Api.Controllers
             }
             try
             {
-                await _prolongRequestService.UpdateProlongRequestAsync(prolongRequestVM);
-                return NoContent();
+                var result = await _prolongRequestService.UpdateProlongRequestAsync(prolongRequestVM);
+                if (result)
+                {
+                    return NoContent();
+                }
+                return NotFound();
             }
             catch (UpdateOperationFailedException) {
                 return Problem();
@@ -92,8 +96,12 @@ namespace Api.Controllers
         {
             try
             {
-                await _prolongRequestService.DeleteProlongRequestAsync(id);
-                return Ok();
+                var result = await _prolongRequestService.DeleteProlongRequestAsync(id);
+                if (result)
+                {
+                    return NoContent();
+                }
+                return NotFound();
             }
             catch (DeleteOperationFailedException) {
                 return Problem();

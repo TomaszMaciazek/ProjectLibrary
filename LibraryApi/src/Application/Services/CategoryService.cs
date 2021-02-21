@@ -39,15 +39,20 @@ namespace Application.Services
                 throw new AddOperationFailedException();
             }
         }
-        public async Task UpdateCategoryAsync(UpdateCategoryVM category)
+        public async Task<bool> UpdateCategoryAsync(UpdateCategoryVM category)
         {
             try
             {
                 var entity = await _categoryRepository.GetCategoryByIdAsync(category.Id);
+                if(entity == null)
+                {
+                    return false;
+                }
                 entity.Name = category.Name;
                 entity.ModificationDate = category.ModyficationDate;
                 entity.ModifiedBy = category.ModifiedBy;
                 await _categoryRepository.UpdateAsync(entity);
+                return true;
             }
             catch (Exception)
             {
@@ -55,11 +60,17 @@ namespace Application.Services
             }
         }
 
-        public async Task DeleteCategoryAsync(int id)
+        public async Task<bool> DeleteCategoryAsync(int id)
         {
             try
             {
-                await _categoryRepository.DeleteAsync(id);
+                var category = await _categoryRepository.GetCategoryByIdAsync(id);
+                if(category == null)
+                {
+                    return false;
+                }
+                await _categoryRepository.DeleteAsync(category);
+                return true;
             }
             catch (InvalidOperationException)
             {

@@ -9,9 +9,9 @@ namespace Application.Interfaces
     public interface IAuthorService
     {
         Task<AuthorDto> AddAuthorAsync(AddAuthorVM author);
-        Task DeleteAuthorAsync(int id);
+        Task<bool> DeleteAuthorAsync(int id);
         Task<ICollection<AuthorDto>> GetAllAuthorsAsync();
         Task<AuthorWithBooksDto> GetAuthorByIdAsync(int id);
-        Task UpdateAuthorAsync(UpdateAuthorVM author);
+        Task<bool> UpdateAuthorAsync(UpdateAuthorVM author);
     }
 }

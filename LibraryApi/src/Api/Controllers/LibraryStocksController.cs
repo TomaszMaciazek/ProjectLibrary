@@ -99,8 +99,12 @@ namespace Api.Controllers
             }
             try
             {
-                await _bookService.UpdateBookAsync(bookVM);
-                return NoContent();
+                var result = await _bookService.UpdateBookAsync(bookVM);
+                if (result)
+                {
+                    return NoContent();
+                }
+                return NotFound();
             }
             catch (UpdateOperationFailedException) {
                 return Problem();
@@ -114,8 +118,12 @@ namespace Api.Controllers
         {
             try
             {
-                await _bookService.DeleteBookAsync(id);
-                return Ok();
+                var result = await _bookService.DeleteBookAsync(id);
+                if (result)
+                {
+                    return NoContent();
+                }
+                return NotFound();
             }
             catch (DeleteIsForbiddenException) {
                 return Forbid();

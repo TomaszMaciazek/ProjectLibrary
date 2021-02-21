@@ -32,9 +32,8 @@ namespace Infrastructure.Common
             await SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Entity entity)
         {
-            var entity = DbSet.FirstOrDefault(x => x.Id == id);
             DbSet.Remove(entity);
             await SaveChangesAsync();
         }

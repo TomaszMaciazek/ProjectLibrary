@@ -73,8 +73,12 @@ namespace Api.Controllers
             }
             try
             {
-                await _borrowingService.UpdateBorrowingAsync(borrowingVM);
-                return NoContent();
+                var result = await _borrowingService.UpdateBorrowingAsync(borrowingVM);
+                if (result)
+                {
+                    return NoContent();
+                }
+                return NotFound();
             }
             catch (UpdateOperationFailedException) {
                 return Problem();
@@ -88,8 +92,12 @@ namespace Api.Controllers
         {
             try
             {
-                await _borrowingService.DeleteBorrowingAsync(id);
-                return Ok();
+                var result = await _borrowingService.DeleteBorrowingAsync(id);
+                if (result)
+                {
+                    return NoContent();
+                }
+                return NotFound();
             }
             catch (DeleteOperationFailedException) {
                 return Problem();

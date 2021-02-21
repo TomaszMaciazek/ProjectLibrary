@@ -97,8 +97,12 @@ namespace Api.Controllers
             }
             try
             {
-                await _reservationService.UpdateReservationAsync(reservationVm);
-                return Ok();
+                var result = await _reservationService.UpdateReservationAsync(reservationVm);
+                if (result)
+                {
+                    return NoContent();
+                }
+                return NotFound();
             }
             catch (UpdateOperationFailedException) {
                 return Problem();
@@ -112,8 +116,12 @@ namespace Api.Controllers
         {
             try
             {
-                await _reservationService.DeleteReservationAsync(id);
-                return Ok();
+                var result = await _reservationService.DeleteReservationAsync(id);
+                if (result)
+                {
+                    return NoContent();
+                }
+                return NotFound();
             }
             catch (DeleteOperationFailedException) {
                 return Problem();

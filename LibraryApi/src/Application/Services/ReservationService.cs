@@ -75,15 +75,20 @@ namespace Application.Services
 
         }
 
-        public async Task UpdateReservationAsync(UpdateReservationVM model)
+        public async Task<bool> UpdateReservationAsync(UpdateReservationVM model)
         {
             try
             {
                 var reservation = await _reservationRepository.GetReservationByIdAsync(model.Id);
+                if(reservation == null)
+                {
+                    return false;
+                }
                 reservation.ReservationStatus = (StatusEnum)model.NewStatus;
                 reservation.ModificationDate = model.ModyficationDate;
                 reservation.ModifiedBy = model.ModifiedBy;
                 await _reservationRepository.UpdateAsync(reservation);
+                return true;
             }
             catch
             {
@@ -91,11 +96,17 @@ namespace Application.Services
             }
         }
 
-        public async Task DeleteReservationAsync(int id)
+        public async Task<bool> DeleteReservationAsync(int id)
         {
             try
             {
-                await _reservationRepository.DeleteAsync(id);
+                var reservation = await _reservationRepository.GetReservationByIdAsync(id);
+                if (reservation == null)
+                {
+                    return false;
+                }
+                await _reservationRepository.DeleteAsync(reservation);
+                return true;
             }
             catch (Exception)
             {
