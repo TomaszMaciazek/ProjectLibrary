@@ -21,7 +21,7 @@ namespace Api.Controllers
             _reservationService = reservationService;
         }
 
-
+        
         [HttpGet]
         [Description("Get all reservations")]
         [Authorize(Roles = "Admin, Librarian")]
@@ -48,25 +48,25 @@ namespace Api.Controllers
             var reservations = await _reservationService.GetAllAwaitingReservationsAsync();
             return Ok(reservations);
         }
-
-        [HttpGet]
+        
+        [HttpGet("user/{userId}")]
         [Description("Get all user reservations")]
         [Authorize(Roles = "Admin, Librarian, Reader")]
-        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserReservations([FromQuery] int userId)
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserReservations([FromRoute] int userId)
         {
             var reservations = await _reservationService.GetAllUserReservationsAsync(userId);
             return Ok(reservations);
         }
-
-        [HttpGet("awaitingReservations")]
-        [Description("Get all user reservations")]
+        
+        [HttpGet("awaitingReservations/{userId}")]
+        [Description("Get all user awaiting reservations")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserAwaitingReservations([FromQuery] int userId)
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserAwaitingReservations([FromRoute] int userId)
         {
             var reservations = await _reservationService.GetAllUserAwaitingReservationsAsync(userId);
             return Ok(reservations);
         }
-
+        
         [HttpPost]
         [Description("Add reservation to database")]
         [Authorize(Roles = "Reader")]
@@ -127,5 +127,6 @@ namespace Api.Controllers
                 return Problem();
             }
         }
+        
     }
 }

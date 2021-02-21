@@ -1,14 +1,19 @@
-﻿using Application.Dto;
+﻿using Api.Models;
+using Application.Dto;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Api.Controllers
@@ -18,12 +23,14 @@ namespace Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IConfiguration _config;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, IConfiguration configuration)
         {
             _userService = userService;
+            _config = configuration;
         }
-
+        
         [HttpGet("Librarians")]
         [Description("Get all librarians")]
         [Authorize(Roles = "Admin")]
@@ -113,14 +120,39 @@ namespace Api.Controllers
             return Created($"api/users/readers/{user.Id}",null);
         }
 
+        
         [HttpPost]
         [Description("Sign In user")]
         [Route("[action]")]
         [AllowAnonymous]
-        public async Task<ActionResult<UserWithRoleDto>> SignInUser([FromBody]UserVM userVM)
+        public async Task<IActionResult> SignInUser([FromBody]UserVM userVM)
         {
+            IActionResult response = Unauthorized();
             var result = await _userService.SignInUserAsync(userVM);
-            return Ok(result);
+            if (result.Succeeded)
+            {
+                var tokenString = GenerateJsonWebToken(userVM);
+                return Ok(new { token = tokenString });
+            }
+            return response;
+            //var result = await _userService.SignInUserAsync(userVM);
+            //return Ok(result);
+        }
+
+        private string GenerateJsonWebToken(UserVM userVM)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = 
+                new JwtSecurityToken(
+                        _config["Jwt:Issuer"],
+                        _config["Jwt:Issuer"],
+                        null,
+                        expires: DateTime.Now.AddMinutes(120),
+                        signingCredentials: credentials
+                    );
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         [HttpPost]

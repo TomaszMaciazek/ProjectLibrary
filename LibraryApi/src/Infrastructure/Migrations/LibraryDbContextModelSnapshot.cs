@@ -331,21 +331,21 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "9ff543e3-403a-4d67-8a86-86f760ce2320",
+                            ConcurrencyStamp = "14390568-e04d-44bb-8e14-2dee8c6e14dc",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "0203febc-745a-48f2-9139-eb8bf215f52c",
+                            ConcurrencyStamp = "316eefb3-9ca6-4adc-a1b1-b06eb198ce6e",
                             Name = "Librarian",
                             NormalizedName = "LIBRARIAN"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "d4b4fc63-3830-422d-86a9-34b6dfd8735a",
+                            ConcurrencyStamp = "fddebfac-658a-4432-a765-f6fbc38367bb",
                             Name = "Reader",
                             NormalizedName = "READER"
                         });
@@ -437,13 +437,14 @@ namespace Infrastructure.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "aef3cb2e-3ee2-42f0-8ebb-5ef4a8048bf2",
+                            ConcurrencyStamp = "f0af8c4f-1a9d-4ba0-9953-58fc4e28609b",
                             EmailConfirmed = false,
                             IsActive = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAECtnQM7TlISyTcrGc9pT7mi33448KTcg2zFawlgicEM1WwowoV3A/tUBqopYTPntLg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEbsf1C7LEahFMFi2eqF4t4N4GS/Ba+e5KLjIjyDcI9MN5JvZxFwrp3Hppaf5EGvXQ==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "09cf7921-ba9b-42ae-9234-0c17b2e3d572",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });

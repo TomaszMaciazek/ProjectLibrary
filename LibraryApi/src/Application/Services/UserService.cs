@@ -30,28 +30,16 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<UserWithRoleDto> SignInUserAsync(UserVM userVM)
+        public async Task<SignInResult> SignInUserAsync(UserVM userVM)
         {
             try
             {
-                var user = await _userManager.FindByEmailAsync(userVM.Input);
-                user ??= await _userManager.FindByNameAsync(userVM.Input);
+                var user = await _userManager.FindByEmailAsync(userVM.Username);
+                user ??= await _userManager.FindByNameAsync(userVM.Username);
                 if(user != null)
                 {
-                    var result = await _signInController.PasswordSignInAsync(user, userVM.Password, userVM.RememberMe, false);
-                    if (result.Succeeded)
-                    {
-                        var userDto =  _mapper.Map<UserWithRoleDto>(user);
-                        var roles = await _userManager.GetRolesAsync(user);
-                        userDto.RoleName = roles[0];
-                        return userDto;
-                    }
-                    else if (result.IsLockedOut)
-                    {
-                        throw new UserIsLockedOutException();
-                    }
+                    return await _signInController.PasswordSignInAsync(user, userVM.Password, userVM.RememberMe, false);
                 }
-                //user with given parameters does not exist
                 throw new NotFoundException();
             }
             catch (UserIsLockedOutException ex)

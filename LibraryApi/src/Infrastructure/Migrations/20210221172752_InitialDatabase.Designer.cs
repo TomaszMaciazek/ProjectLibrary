@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20210112205313_AddedImageUrlToBook")]
-    partial class AddedImageUrlToBook
+    [Migration("20210221172752_InitialDatabase")]
+    partial class InitialDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -333,21 +333,21 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "cfb3a3ca-961d-4b35-8f68-58ef0c3c8013",
+                            ConcurrencyStamp = "14390568-e04d-44bb-8e14-2dee8c6e14dc",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "d9978f50-be17-4258-8e5f-2e894952b7c4",
+                            ConcurrencyStamp = "316eefb3-9ca6-4adc-a1b1-b06eb198ce6e",
                             Name = "Librarian",
                             NormalizedName = "LIBRARIAN"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "fa207e98-b09c-4c93-877f-2504d49c06bc",
+                            ConcurrencyStamp = "fddebfac-658a-4432-a765-f6fbc38367bb",
                             Name = "Reader",
                             NormalizedName = "READER"
                         });
@@ -378,6 +378,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -436,12 +439,14 @@ namespace Infrastructure.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e62a7a61-d74c-4a4a-866b-b96f187d20cd",
+                            ConcurrencyStamp = "f0af8c4f-1a9d-4ba0-9953-58fc4e28609b",
                             EmailConfirmed = false,
+                            IsActive = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJvYpn0CNeCkWjhp04nlLnxsZpC6L+r8ThzsU6GToznmtDrnO7f55Yhdk/0RNmJPug==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEbsf1C7LEahFMFi2eqF4t4N4GS/Ba+e5KLjIjyDcI9MN5JvZxFwrp3Hppaf5EGvXQ==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "09cf7921-ba9b-42ae-9234-0c17b2e3d572",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });

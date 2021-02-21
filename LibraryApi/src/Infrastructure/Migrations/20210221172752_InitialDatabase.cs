@@ -32,6 +32,7 @@ namespace Infrastructure.Migrations
                     ReservationsLimit = table.Column<int>(type: "int", nullable: true),
                     CardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -219,6 +220,7 @@ namespace Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     YearOfRelease = table.Column<int>(type: "int", nullable: false),
                     Count = table.Column<int>(type: "int", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PublisherId = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -369,15 +371,15 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "307470db-4bdc-4a74-8af9-db70ad604307", "Admin", "ADMIN" },
-                    { 2, "4128bbe8-751f-453a-a37e-50632ec76221", "Librarian", "LIBRARIAN" },
-                    { 3, "9e8780f3-4bed-4efe-888c-679187a22956", "Reader", "READER" }
+                    { 1, "14390568-e04d-44bb-8e14-2dee8c6e14dc", "Admin", "ADMIN" },
+                    { 2, "316eefb3-9ca6-4adc-a1b1-b06eb198ce6e", "Librarian", "LIBRARIAN" },
+                    { 3, "fddebfac-658a-4432-a765-f6fbc38367bb", "Reader", "READER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "BorrowingsLimit", "CardNumber", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "ReservationsLimit", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { 1, 0, null, null, "218746b5-37d8-4b7c-9396-3b9b77b67ac3", null, false, false, null, null, null, "ADMIN", "AQAAAAEAACcQAAAAELYgaasMD543ZGKeNKgJduW8vHn6qw9PV73/oGWUauwNXyrzzXvo5TszvEh2shnUDg==", null, false, null, null, false, "admin" });
+                columns: new[] { "Id", "AccessFailedCount", "BorrowingsLimit", "CardNumber", "ConcurrencyStamp", "Email", "EmailConfirmed", "IsActive", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "ReservationsLimit", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { 1, 0, null, null, "f0af8c4f-1a9d-4ba0-9953-58fc4e28609b", null, false, true, false, null, null, null, "ADMIN", "AQAAAAEAACcQAAAAEEbsf1C7LEahFMFi2eqF4t4N4GS/Ba+e5KLjIjyDcI9MN5JvZxFwrp3Hppaf5EGvXQ==", null, false, null, "09cf7921-ba9b-42ae-9234-0c17b2e3d572", false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",

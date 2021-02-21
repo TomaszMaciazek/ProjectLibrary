@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 
 namespace Infrastructure.Persistence.Configurations
 {
@@ -17,7 +18,8 @@ namespace Infrastructure.Persistence.Configurations
                         UserName = "admin",
                         PasswordHash = passwordHasher.HashPassword(null, "admin"),
                         NormalizedUserName = "ADMIN",
-                        IsActive = true
+                        IsActive = true,
+                        SecurityStamp = Guid.NewGuid().ToString()
                     }
                 );
         }
