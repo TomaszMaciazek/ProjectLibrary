@@ -31,6 +31,15 @@ namespace Api.Controllers
             return Ok(reservations);
         }
 
+        [HttpGet("{id}")]
+        [Description("Get reservation by id")]
+        [Authorize(Roles = "Admin, Librarian, Reader")]
+        public async Task<ActionResult<ReservationDto>> Get([FromRoute] int id)
+        {
+            var reservation = await _reservationService.GetReservationByIdAsync(id);
+            return Ok(reservation);
+        }
+
         [HttpGet("awaitingReservations")]
         [Description("Get all awaiting reservations")]
         [Authorize(Roles = "Admin, Librarian")]
@@ -40,21 +49,21 @@ namespace Api.Controllers
             return Ok(reservations);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
         [Description("Get all user reservations")]
         [Authorize(Roles = "Admin, Librarian, Reader")]
-        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserReservations([FromRoute] int id)
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserReservations([FromQuery] int userId)
         {
-            var reservations = await _reservationService.GetAllUserReservationsAsync(id);
+            var reservations = await _reservationService.GetAllUserReservationsAsync(userId);
             return Ok(reservations);
         }
 
-        [HttpGet("awaitingReservations/{id}")]
+        [HttpGet("awaitingReservations")]
         [Description("Get all user reservations")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserAwaitingReservations([FromRoute] int id)
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserAwaitingReservations([FromQuery] int userId)
         {
-            var reservations = await _reservationService.GetAllUserAwaitingReservationsAsync(id);
+            var reservations = await _reservationService.GetAllUserAwaitingReservationsAsync(userId);
             return Ok(reservations);
         }
 
@@ -63,10 +72,14 @@ namespace Api.Controllers
         [Authorize(Roles = "Reader")]
         public async Task<IActionResult> Post([FromBody]AddReservationVM reservationVm)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(reservationVm);
+            }
             try
             {
-                await _reservationService.AddReservationAsync(reservationVm);
-                return Ok();
+                var reservation = await _reservationService.AddReservationAsync(reservationVm);
+                return Created($"api/reservations/{reservation.Id}",null);
             }
             catch (AddOperationFailedException) {
                 return Problem();
@@ -78,6 +91,10 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin, Librarian, Reader")]
         public async Task<IActionResult> Put([FromBody]UpdateReservationVM reservationVm)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(reservationVm);
+            }
             try
             {
                 await _reservationService.UpdateReservationAsync(reservationVm);

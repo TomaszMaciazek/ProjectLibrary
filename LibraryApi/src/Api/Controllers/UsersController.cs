@@ -81,8 +81,12 @@ namespace Api.Controllers
         [Description("Creates user with Librarian role")]
         [Route("[action]")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> PostLibrarian(CreateLibrarianVM userVM)
+        public async Task<IActionResult> PostLibrarian([FromBody] CreateLibrarianVM userVM)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(userVM);
+            }
             await _userService.CreateLibrarianAsync(userVM);
             return Ok();
         }
@@ -91,8 +95,12 @@ namespace Api.Controllers
         [Description("Creates user with Reader role")]
         [Route("[action]")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> PostReader(CreateReaderVM userVM)
+        public async Task<IActionResult> PostReader([FromBody] CreateReaderVM userVM)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(userVM);
+            }
             await _userService.CreateReaderAsync(userVM);
             return Ok();
         }

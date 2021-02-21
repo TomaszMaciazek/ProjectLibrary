@@ -48,6 +48,10 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Post([FromBody]AddCategoryVM categoryVM)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(categoryVM);
+            }
             try
             {
                 var category = await _categoryService.AddCategoryAsync(categoryVM);
@@ -63,6 +67,10 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Put([FromBody]UpdateCategoryVM categoryVM)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(categoryVM);
+            }
             try
             {
                 await _categoryService.UpdateCategoryAsync(categoryVM);

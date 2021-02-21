@@ -48,12 +48,25 @@ namespace Application.Services
             }
         }
 
-        public async Task AddReservationAsync(AddReservationVM reservationDto)
+        public async Task<ReservationDto> GetReservationByIdAsync(int id)
+        {
+            try
+            {
+                return _mapper.Map<ReservationDto>(await _reservationRepository.GetReservationByIdAsync(id));
+            }
+            catch (Exception)
+            {
+                throw new GetOperationFailedException();
+            }
+        }
+
+        public async Task<ReservationDto> AddReservationAsync(AddReservationVM reservationDto)
         {
             try
             {
                 var mappedReservation = _mapper.Map<Reservation>(reservationDto);
                 await _reservationRepository.AddAsync(mappedReservation);
+                return _mapper.Map<ReservationDto>(mappedReservation);
             }
             catch (Exception)
             {

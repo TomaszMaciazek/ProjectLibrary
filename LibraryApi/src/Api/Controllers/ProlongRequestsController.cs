@@ -52,6 +52,10 @@ namespace Api.Controllers
         [Authorize(Roles = "Reader")]
         public async Task<IActionResult> Post([FromBody]AddProlongRequestVM prolongRequesrVM)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(prolongRequesrVM);
+            }
             try
             {
                 var request = await _prolongRequestService.AddProlongRequestAsync(prolongRequesrVM);
@@ -67,6 +71,10 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin, Librarian, Reader")]
         public async Task<IActionResult> Put([FromBody]UpdateProlongRequestVM prolongRequestVM)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(prolongRequestVM);
+            }
             try
             {
                 await _prolongRequestService.UpdateProlongRequestAsync(prolongRequestVM);

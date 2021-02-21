@@ -49,6 +49,10 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Post([FromBody]AddBorrowingVM borrowingVM)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(borrowingVM);
+            }
             try
             {
                 var borrowing = await _borrowingService.AddBorrowingAsync(borrowingVM);
@@ -63,6 +67,10 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Put([FromBody]UpdateBorrowingVM borrowingVM)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(borrowingVM);
+            }
             try
             {
                 await _borrowingService.UpdateBorrowingAsync(borrowingVM);

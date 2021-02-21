@@ -74,6 +74,10 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Post([FromBody]AddBookVM bookVM)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(bookVM);
+            }
             try
             {
                 var book = await _bookService.AddBookAsync(bookVM);
@@ -89,6 +93,10 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Put([FromBody]UpdateBookVM bookVM)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(bookVM);
+            }
             try
             {
                 await _bookService.UpdateBookAsync(bookVM);
