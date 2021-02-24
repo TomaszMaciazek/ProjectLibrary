@@ -1,4 +1,5 @@
-﻿using Application.Dto;
+﻿using Application.Args;
+using Application.Dto;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels.AddVM;
@@ -29,10 +30,16 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<ICollection<BaseBookDto>> GetAllBooksAsync(string filterString)
-            => _mapper.Map<ICollection<BaseBookDto>>(await _bookRepository.GetAllBooksAsync(filterString));
-        public async Task<ICollection<BaseBookDto>> GetAllAvailableBooksAsync(string filterString)
-            => _mapper.Map<ICollection<BaseBookDto>>(await _bookRepository.GetAllAvailableBooksAsync(filterString));
+        public async Task<ICollection<BaseBookDto>> GetAllBooksAsync(BookFilterArgs args)
+            => _mapper.Map<ICollection<BaseBookDto>>(
+                    await _bookRepository.GetAllBooksAsync(
+                        args.FilterTitleString,
+                        args.Authors,
+                        args.Categories,
+                        args.Publishers,
+                        args.OnlyAvailable
+                        )
+                );
         public async Task<BookWithDetalisDto> GetBookByIdAsync(int id)
             => _mapper.Map<BookWithDetalisDto>(await _bookRepository.GetBookByIdAsync(id));
         public async Task<BookWithDetalisDto> AddBookAsync(AddBookVM newBook)

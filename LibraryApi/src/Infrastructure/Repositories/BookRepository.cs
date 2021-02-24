@@ -15,49 +15,41 @@ namespace Infrastructure.Repositories
         protected override DbSet<Book> DbSet => _dbContext.Books;
         public BookRepository(LibraryDbContext dbContext) : base(dbContext) { }
 
-        public async Task<ICollection<Book>> GetAllBooksAsync(string filterString)
+        public async Task<ICollection<Book>> GetAllBooksAsync(
+            string filterTitleString,
+            string [] authors,
+            string [] categories,
+            string [] publishers,
+            bool onlyAvailable
+            )
         {
-            if (string.IsNullOrEmpty(filterString))
-            {
-                return await DbSet
+            var set = DbSet
                     .Include(b => b.Authors)
                         .ThenInclude(ab => ab.Author)
                     .Include(b => b.Category)
-                    .Include(b => b.Publisher)
-                    .ToListAsync();
-            }
-            return await DbSet
-                    .Include(b => b.Authors)
-                        .ThenInclude(ab => ab.Author)
-                    .Include(b => b.Category)
-                    .Include(b => b.Publisher)
-                    .Where(b => b.Title.Contains(filterString))
-                    .ToListAsync();
-        }
-        public async Task<ICollection<Book>> GetAllAvailableBooksAsync(string filterString)
-        {
-            if (string.IsNullOrEmpty(filterString))
-            {
-                return await DbSet
-                    .Include(b => b.Authors)
-                        .ThenInclude(ab => ab.Author)
-                    .Include(b => b.Category)
-                    .Include(b => b.Publisher)
+                    .Include(b => b.Publisher);
+
+            var result = string.IsNullOrEmpty(filterTitleString)
+                ? set : set.Where(b => b.Title.ToLower().Contains(filterTitleString.ToLower()));
+
+            result = authors.Length == 0
+                ? result
+                : result.Where(b => b.Authors.Where(a => authors.Contains(a.Author.Name)).Count() > 0);
+
+            result = categories.Length == 0
+                ? result
+                : result.Where(b => categories.Contains(b.Category.Name));
+
+            result = publishers.Length == 0
+                ? result
+                : result.Where(b => publishers.Contains(b.Publisher.Name));
+
+            result = onlyAvailable
+                ? result
                     .Where(b => (GetNumberOfAwaitingReservations(b) + GetNumberOfCurrentBorrowings(b)) < b.Count)
-                    .ToListAsync();
-            }
-            return await DbSet
-                    .Include(b => b.Authors)
-                        .ThenInclude(ab => ab.Author)
-                    .Include(b => b.Category)
-                    .Include(b => b.Publisher)
-                    .Where(
-                        b => b.Title.Contains(filterString)
-                        && (GetNumberOfAwaitingReservations(b) + GetNumberOfCurrentBorrowings(b)) < b.Count
-                     )
-                    .ToListAsync();
+                : result;
+            return await result.ToListAsync() ;
         }
-        
         public async Task<Book> GetBookByIdAsync(int id)
         {
             return await DbSet

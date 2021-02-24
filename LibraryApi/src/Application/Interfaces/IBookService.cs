@@ -1,4 +1,5 @@
-﻿using Application.Dto;
+﻿using Application.Args;
+using Application.Dto;
 using Application.ViewModels.AddVM;
 using Application.ViewModels.UpdateVM;
 using System.Collections.Generic;
@@ -10,8 +11,7 @@ namespace Application.Interfaces
     {
         Task<BookWithDetalisDto> AddBookAsync(AddBookVM newBook);
         Task<bool> DeleteBookAsync(int id);
-        Task<ICollection<BaseBookDto>> GetAllAvailableBooksAsync(string filterString);
-        Task<ICollection<BaseBookDto>> GetAllBooksAsync(string filterString);
+        Task<ICollection<BaseBookDto>> GetAllBooksAsync(BookFilterArgs args);
         Task<BookWithDetalisDto> GetBookByIdAsync(int id);
         Task<bool> UpdateBookAsync(UpdateBookVM book);
     }

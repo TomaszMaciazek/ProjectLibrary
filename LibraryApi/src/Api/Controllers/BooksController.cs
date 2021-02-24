@@ -1,4 +1,5 @@
-﻿using Application.Dto;
+﻿using Application.Args;
+using Application.Dto;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels;
@@ -29,10 +30,19 @@ namespace Api.Controllers
             [FromQuery] string title,
             [FromQuery(Name = "author")] string [] authors,
             [FromQuery(Name = "category")] string [] categories,
-            [FromQuery(Name = "publisher")] string[] publishers
+            [FromQuery(Name = "publisher")] string[] publishers,
+            [FromQuery] bool onlyAvailable
             )
         {
-            var books = await _bookService.GetAllBooksAsync(null);
+            var args = new BookFilterArgs
+            {
+                FilterTitleString = title,
+                Authors = authors,
+                Categories = categories,
+                Publishers = publishers,
+                OnlyAvailable = onlyAvailable
+            };
+            var books = await _bookService.GetAllBooksAsync(args);
             return Ok(books);
         }
 
