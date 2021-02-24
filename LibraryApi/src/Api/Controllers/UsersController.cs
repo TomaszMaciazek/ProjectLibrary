@@ -135,8 +135,6 @@ namespace Api.Controllers
                 return Ok(new { token = tokenString });
             }
             return response;
-            //var result = await _userService.SignInUserAsync(userVM);
-            //return Ok(result);
         }
 
         private string GenerateJsonWebToken(UserVM userVM)
