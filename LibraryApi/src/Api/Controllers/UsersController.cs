@@ -1,5 +1,4 @@
-﻿using Api.Models;
-using Application.Dto;
+﻿using Application.Dto;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels;
@@ -12,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 

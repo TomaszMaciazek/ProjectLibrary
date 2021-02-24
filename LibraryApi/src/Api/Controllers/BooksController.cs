@@ -5,55 +5,35 @@ using Application.ViewModels;
 using Application.ViewModels.AddVM;
 using Application.ViewModels.UpdateVM;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LibraryStocksController : ControllerBase
+    public class BooksController : ControllerBase
     {
         private readonly IBookService _bookService;
-        private readonly ICategoryService _categoryService;
-        private readonly IPublisherService _publisherService;
-        private readonly IAuthorService _authorService;
 
-        public LibraryStocksController(
-            IBookService bookService,
-            ICategoryService categoryService,
-            IPublisherService publisherService,
-            IAuthorService authorService
-            )
+        public BooksController(IBookService bookService)
         {
             _bookService = bookService;
-            _categoryService = categoryService;
-            _publisherService = publisherService;
-            _authorService = authorService;
         }
 
         [HttpGet]
         [Description("Get all books and filter data")]
         [AllowAnonymous]
-        public async Task<ActionResult<BooksPageVM>> Get()
+        public async Task<ActionResult<BooksPageVM>> Get(
+            [FromQuery] string title,
+            [FromQuery(Name = "author")] string [] authors,
+            [FromQuery(Name = "category")] string [] categories,
+            [FromQuery(Name = "publisher")] string[] publishers
+            )
         {
             var books = await _bookService.GetAllBooksAsync(null);
-            var publishers = await _publisherService.GetAllPublishersAsync();
-            var categories = await _categoryService.GetAllCategoriesAsync();
-            var authors = await _authorService.GetAllAuthorsAsync();
-            var model = new BooksPageVM
-            {
-                Books = books,
-                Publishers = publishers,
-                Categories = categories,
-                Authors = authors
-            };
-            return Ok(model);
+            return Ok(books);
         }
 
         [HttpGet("{id}")]
