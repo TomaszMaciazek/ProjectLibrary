@@ -11,5 +11,7 @@ namespace Application.Args
         public string[] Categories { get; set; }
         public string[] Publishers { get; set; }
         public bool OnlyAvailable { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
     }
 }

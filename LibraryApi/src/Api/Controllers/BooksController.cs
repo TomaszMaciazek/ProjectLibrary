@@ -31,7 +31,9 @@ namespace Api.Controllers
             [FromQuery(Name = "author")] string [] authors,
             [FromQuery(Name = "category")] string [] categories,
             [FromQuery(Name = "publisher")] string[] publishers,
-            [FromQuery] bool onlyAvailable
+            [FromQuery] bool onlyAvailable,
+            [FromQuery] int pageNumber,
+            [FromQuery] int pageSize
             )
         {
             var args = new BookFilterArgs
@@ -40,7 +42,9 @@ namespace Api.Controllers
                 Authors = authors,
                 Categories = categories,
                 Publishers = publishers,
-                OnlyAvailable = onlyAvailable
+                OnlyAvailable = onlyAvailable,
+                PageNumber = pageNumber,
+                PageSize = pageSize
             };
             var books = await _bookService.GetAllBooksAsync(args);
             return Ok(books);

@@ -12,7 +12,9 @@ namespace Infrastructure.Interfaces
             string[] authors,
             string[] categories,
             string[] publishers,
-            bool onlyAvailable
+            bool onlyAvailable,
+            int pageNumber,
+            int pageSize
             );
         Task<Book> GetBookByIdAsync(int id);
     }

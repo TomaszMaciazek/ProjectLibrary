@@ -37,7 +37,9 @@ namespace Application.Services
                         args.Authors,
                         args.Categories,
                         args.Publishers,
-                        args.OnlyAvailable
+                        args.OnlyAvailable,
+                        args.PageNumber,
+                        args.PageSize
                         )
                 );
         public async Task<BookWithDetalisDto> GetBookByIdAsync(int id)

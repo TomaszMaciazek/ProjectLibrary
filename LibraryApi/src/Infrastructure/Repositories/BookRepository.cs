@@ -20,7 +20,9 @@ namespace Infrastructure.Repositories
             string [] authors,
             string [] categories,
             string [] publishers,
-            bool onlyAvailable
+            bool onlyAvailable,
+            int pageNumber,
+            int pageSize
             )
         {
             var set = DbSet
@@ -48,7 +50,7 @@ namespace Infrastructure.Repositories
                 ? result
                     .Where(b => (GetNumberOfAwaitingReservations(b) + GetNumberOfCurrentBorrowings(b)) < b.Count)
                 : result;
-            return await result.ToListAsync() ;
+            return await result.Skip(pageNumber * pageSize).Take(pageSize).ToListAsync() ;
         }
         public async Task<Book> GetBookByIdAsync(int id)
         {
