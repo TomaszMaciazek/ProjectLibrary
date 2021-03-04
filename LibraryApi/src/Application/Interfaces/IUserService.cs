@@ -20,7 +20,7 @@ namespace Application.Interfaces
         Task<bool> IsReader(int id);
         Task<bool> MakeUserActive(int id);
         Task<bool> MakeUserNotActive(int id);
-        Task<SignInResult> SignInUserAsync(UserVM userVM);
+        Task<UserWithRoleDto> SignInUserAsync(UserVM userVM);
         Task SignOutUserAsync();
         Task<bool> UpdateUserAsync(UpdateUserVM userToUpdate);
     }

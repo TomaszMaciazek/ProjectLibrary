@@ -30,7 +30,7 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<SignInResult> SignInUserAsync(UserVM userVM)
+        public async Task<UserWithRoleDto> SignInUserAsync(UserVM userVM)
         {
             try
             {
@@ -38,7 +38,14 @@ namespace Application.Services
                 user ??= await _userManager.FindByNameAsync(userVM.Username);
                 if(user != null)
                 {
-                    return await _signInController.PasswordSignInAsync(user, userVM.Password, userVM.RememberMe, false);
+                    var result = await _signInController.PasswordSignInAsync(user, userVM.Password, userVM.RememberMe, false);
+                    if(result == SignInResult.Success)
+                    {
+                        var userDto = _mapper.Map<UserWithRoleDto>(user);
+                        var roles = await _userManager.GetRolesAsync(user);
+                        userDto.RoleName = roles[0];
+                        return userDto;
+                    }
                 }
                 throw new NotFoundException();
             }
@@ -197,9 +204,7 @@ namespace Application.Services
         }
 
         public async Task<UserDto> GetUserByIdAsync(int id)
-        {
-            return _mapper.Map<UserDto>(await _userManager.FindByIdAsync(id.ToString()));
-        }
+            => _mapper.Map<UserDto>(await _userManager.FindByIdAsync(id.ToString()));
 
         public async Task<ICollection<UserDto>> GetAllLibrariansAsync()
         {

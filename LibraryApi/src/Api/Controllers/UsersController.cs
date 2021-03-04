@@ -83,9 +83,8 @@ namespace Api.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpPost("librarians")]
         [Description("Creates user with Librarian role")]
-        [Route("[action]")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PostLibrarian([FromBody] CreateLibrarianVM userVM)
         {
@@ -101,9 +100,8 @@ namespace Api.Controllers
             return Created($"api/users/librarians/{user.Id}", null);
         }
 
-        [HttpPost]
+        [HttpPost("readers")]
         [Description("Creates user with Reader role")]
-        [Route("[action]")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PostReader([FromBody] CreateReaderVM userVM)
         {
@@ -126,30 +124,21 @@ namespace Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> SignInUser([FromBody]UserVM userVM)
         {
-            IActionResult response = Unauthorized();
-            var result = await _userService.SignInUserAsync(userVM);
-            if (result.Succeeded)
+            try
             {
-                var tokenString = GenerateJsonWebToken(userVM);
-                return Ok(new { token = tokenString });
+                IActionResult response = Unauthorized();
+                var user = await _userService.SignInUserAsync(userVM);
+                if (user != null)
+                {
+                    var tokenString = JwtTokenGenerator.JwtTokenGenerator.GenerateJsonWebToken(user, _config);
+                    return Ok(new { token = tokenString });
+                }
+                return response;
             }
-            return response;
-        }
-
-        private string GenerateJsonWebToken(UserVM userVM)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var token = 
-                new JwtSecurityToken(
-                        _config["Jwt:Issuer"],
-                        _config["Jwt:Issuer"],
-                        null,
-                        expires: DateTime.Now.AddMinutes(120),
-                        signingCredentials: credentials
-                    );
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            catch (NotFoundException)
+            {
+                return Unauthorized();
+            }
         }
 
         [HttpPost]
@@ -244,12 +233,13 @@ namespace Api.Controllers
                 }
                 return NotFound();
             }
-            catch (DeleteOperationFailedException) { }
+            catch (DeleteOperationFailedException) {
+                return Problem();
+            }
             catch (DeleteIsForbiddenException)
             {
                 return Forbid();
             }
-            return Ok();
         }
     }
 }
