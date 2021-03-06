@@ -29,7 +29,16 @@ namespace Api.Controllers
             _userService = userService;
             _config = configuration;
         }
-        
+
+        [HttpGet("Admins")]
+        [Description("Get all administrators")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetAdmins()
+        {
+            var librarians = await _userService.GetAllAdminsAsync();
+            return Ok(librarians);
+        }
+
         [HttpGet("Librarians")]
         [Description("Get all librarians")]
         [Authorize(Roles = "Admin")]
@@ -48,30 +57,65 @@ namespace Api.Controllers
             return Ok(readers);
         }
 
-        [HttpGet("readers/{id}")]
+        [HttpGet("Users/{id}")]
+        [Description("Get user by id")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public async Task<ActionResult<UserDto>> GetUserById([FromRoute] int id)
+        {
+            var currentUser = await _userService.GetUserByClaimsAsync(HttpContext.User);
+            var user = await _userService.GetUserByIdAsync(id);
+            if (user == null)
+            {
+                if (currentUser.RoleName == "Librarian")
+                {
+                    if(user.RoleName != "Reader" && user.Id != currentUser.Id)
+                    {
+                        return Forbid(); //Librarian cannot access users other 
+                    }
+                    
+                }
+                return Ok(user);
+            }
+            return NotFound();
+        }
+
+        [HttpGet("Readers/{id}")]
         [Description("Get reader by id")]
         [Authorize(Roles = "Admin, Librarian")]
         public async Task<ActionResult<UserDto>> GetReaderById([FromRoute] int id)
         {
             var reader = await _userService.GetUserByIdAsync(id);
-            if (reader == null)
+            if (reader == null || await _userService.IsReader(reader.Id) == false)
             {
                 return NotFound();
             }
             return Ok(reader);
         }
 
-        [HttpGet("librarians/{id}")]
+        [HttpGet("Librarians/{id}")]
         [Description("Get librarian by id")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UserDto>> GetLibrarianById([FromRoute]int id)
         {
             var librarian = await _userService.GetUserByIdAsync(id);
-            if (librarian == null)
+            if (librarian == null || await _userService.IsLibrarian(librarian.Id) == false)
             {
                 return NotFound();
             }
             return Ok(librarian);
+        }
+
+        [HttpGet("Admins/{id}")]
+        [Description("Get admin by id")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<UserDto>> GetAdminById([FromRoute] int id)
+        {
+            var admin = await _userService.GetUserByIdAsync(id);
+            if (admin == null || await _userService.IsAdmin(admin.Id) == false)
+            {
+                return NotFound();
+            }
+            return Ok(admin);
         }
 
         [HttpGet("CurrentUser")]
@@ -79,14 +123,31 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin, Librarian, Reader")]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
-            var user = await _userService.GetCurrentUser(HttpContext.User);
+            var user = await _userService.GetUserByClaimsAsync(HttpContext.User);
             return Ok(user);
         }
 
-        [HttpPost("librarians")]
+        [HttpPost("Admins")]
+        [Description("Creates user with Admin role")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> PostAdmin([FromBody] CreateAdminOrLibrarianVM userVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(userVM);
+            }
+            var user = await _userService.CreateAdminAsync(userVM);
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            return Created($"api/users/admins/{user.Id}", null);
+        }
+
+        [HttpPost("Librarians")]
         [Description("Creates user with Librarian role")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> PostLibrarian([FromBody] CreateLibrarianVM userVM)
+        public async Task<IActionResult> PostLibrarian([FromBody] CreateAdminOrLibrarianVM userVM)
         {
             if (!ModelState.IsValid)
             {
@@ -100,7 +161,7 @@ namespace Api.Controllers
             return Created($"api/users/librarians/{user.Id}", null);
         }
 
-        [HttpPost("readers")]
+        [HttpPost("Readers")]
         [Description("Creates user with Reader role")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PostReader([FromBody] CreateReaderVM userVM)
@@ -137,7 +198,11 @@ namespace Api.Controllers
             }
             catch (NotFoundException)
             {
-                return Unauthorized();
+                return Unauthorized(new { message = "user not found" });
+            }
+            catch (UserIsLockedOutException)
+            {
+                return Unauthorized(new {message = "user is deactivated"});
             }
         }
 
@@ -151,14 +216,22 @@ namespace Api.Controllers
             return Ok();
         }
 
-        [HttpPut]
-        [Description("Make librarian not active")]
-        [Route("[action]/{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeactivateLibrarian([FromRoute] int id)
+        [HttpPut("Deactivate/{id}")]
+        [Description("Make user not active")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public async Task<IActionResult> DeactivateUser([FromRoute] int id)
         {
-            if(await _userService.IsLibrarian(id))
+            var currentUser = await _userService.GetUserByClaimsAsync(HttpContext.User);
+            var user = await _userService.GetUserByIdAsync(id);
+            if (user != null)
             {
+                if(currentUser.RoleName == "Librarian")
+                {
+                    if(user.Id == currentUser.Id || user.RoleName != "Reader")
+                    {
+                        return Forbid(); //Librarian cannot deactivate himself or user with role other than Reader
+                    }
+                }
                 var result = await _userService.MakeUserNotActive(id);
                 if (result)
                 {
@@ -168,48 +241,22 @@ namespace Api.Controllers
             return NotFound();
         }
 
-        [HttpPut]
-        [Description("Make librarian active")]
-        [Route("[action]/{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> ActivateLibrarian([FromRoute] int id)
-        {
-            if (await _userService.IsLibrarian(id))
-            {
-                var result = await _userService.MakeUserActive(id);
-                if (result)
-                {
-                    return NoContent();
-                }
-            }
-            return NotFound();
-        }
-
-        [HttpPut]
-        [Description("Make reader not active")]
-        [Route("[action]/{id}")]
+        [HttpPut("Activate/{id}")]
+        [Description("Make user active")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<IActionResult> DeactivateReader([FromRoute] int id)
+        public async Task<IActionResult> ActivateUser([FromRoute] int id)
         {
-            if (await _userService.IsReader(id))
+            var currentUser = await _userService.GetUserByClaimsAsync(HttpContext.User);
+            var user = await _userService.GetUserByIdAsync(id);
+            if (user != null)
             {
-                var result = await _userService.MakeUserNotActive(id);
-                if (result)
+                if (currentUser.RoleName == "Librarian")
                 {
-                    return NoContent();
+                    if (user.Id == currentUser.Id || user.RoleName != "Reader")
+                    {
+                        return Forbid(); //Librarian cannot activate himself or user with role other than Reader
+                    }
                 }
-            }
-            return NotFound();
-        }
-
-        [HttpPut]
-        [Description("Make reader active")]
-        [Route("[action]/{id}")]
-        [Authorize(Roles = "Admin, Librarian")]
-        public async Task<IActionResult> ActivateReader([FromRoute] int id)
-        {
-            if (await _userService.IsReader(id))
-            {
                 var result = await _userService.MakeUserActive(id);
                 if (result)
                 {
@@ -221,14 +268,22 @@ namespace Api.Controllers
 
         [HttpDelete("{id}")]
         [Description("Delete user")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try
             {
-                var result = await _userService.DeleteUserAsync(id);
-                if (result)
+                var result = await _userService.GetUserByIdAsync(id);
+                if (result != null)
                 {
+                    if(await _userService.IsLibrarian(id) || await _userService.IsAdmin(id))
+                    {
+                        if (HttpContext.User.IsInRole("Librarian"))
+                        {
+                            return Forbid(); //Librarian cannot delete librarians and admins
+                        }
+                    }
+                    await _userService.DeleteUserAsync(id);
                     return NoContent();
                 }
                 return NotFound();

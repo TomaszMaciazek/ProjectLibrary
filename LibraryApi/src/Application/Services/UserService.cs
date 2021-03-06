@@ -36,8 +36,12 @@ namespace Application.Services
             {
                 var user = await _userManager.FindByEmailAsync(userVM.Username);
                 user ??= await _userManager.FindByNameAsync(userVM.Username);
-                if(user != null)
+                if(user != null )
                 {
+                    if (!user.IsActive)
+                    {
+                        throw new UserIsLockedOutException();
+                    }
                     var result = await _signInController.PasswordSignInAsync(user, userVM.Password, userVM.RememberMe, false);
                     if(result == SignInResult.Success)
                     {
@@ -67,7 +71,7 @@ namespace Application.Services
                 await _signInController.SignOutAsync();
         }
 
-        public async Task<UserDto> CreateLibrarianAsync(CreateLibrarianVM newUser)
+        public async Task<UserDto> CreateAdminAsync(CreateAdminOrLibrarianVM newUser)
         {
             try
             {
@@ -75,7 +79,40 @@ namespace Application.Services
                 {
                     Email = newUser.Email,
                     Name = newUser.Name,
-                    UserName = PolishCharactersChanger.ChangePolishCharatersInString(newUser.Name.Replace(" ", "")).ToLower(),
+                    UserName = newUser.Email,
+                    NormalizedUserName = newUser.Email.ToUpper(),
+                    IsActive = true
+                };
+                var result = await _userManager.CreateAsync(user, newUser.Password);
+                if (result == IdentityResult.Success)
+                {
+                    var resultRole = await _userManager.AddToRoleAsync(user, "Admin");
+                    if (resultRole != IdentityResult.Success)
+                    {
+                        await _userManager.DeleteAsync(user);
+                        return null;
+                    }
+                    return _mapper.Map<UserDto>(user);
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                throw new AddOperationFailedException();
+            }
+
+        }
+
+        public async Task<UserDto> CreateLibrarianAsync(CreateAdminOrLibrarianVM newUser)
+        {
+            try
+            {
+                var user = new ApplicationUser
+                {
+                    Email = newUser.Email,
+                    Name = newUser.Name,
+                    UserName = newUser.Email,
+                    NormalizedUserName = newUser.Email.ToUpper(),
                     IsActive = true
                 };
                 var result = await _userManager.CreateAsync(user, newUser.Password);
@@ -106,7 +143,8 @@ namespace Application.Services
                 {
                     Email = newUser.Email,
                     Name = newUser.Name,
-                    UserName = PolishCharactersChanger.ChangePolishCharatersInString(newUser.Name.Replace(" ", "")).ToLower(),
+                    UserName = newUser.Email,
+                    NormalizedUserName = newUser.Email.ToUpper(),
                     CardNumber = newUser.CardNumber,
                     BorrowingsLimit = newUser.BorrowingsLimit ?? 5,
                     ReservationsLimit = newUser.ReservationsLimit ?? 5,
@@ -137,7 +175,7 @@ namespace Application.Services
             {
                 if (id == 1)
                 {
-                    //prevents from deleting admin user
+                    //prevents from deleting default admin user
                     throw new DeleteIsForbiddenException();
                 }
                 var user = await _userManager.FindByIdAsync(id.ToString());
@@ -203,8 +241,32 @@ namespace Application.Services
             }
         }
 
-        public async Task<UserDto> GetUserByIdAsync(int id)
-            => _mapper.Map<UserDto>(await _userManager.FindByIdAsync(id.ToString()));
+        public async Task<UserWithRoleDto> GetUserByIdAsync(int id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if(user == null)
+            {
+                return null;
+            }
+            var roles = await _userManager.GetRolesAsync(user);
+            var mappedUser = _mapper.Map<UserWithRoleDto>(user);
+            mappedUser.RoleName = roles[0];
+            return mappedUser;
+
+        }
+
+        public async Task<ICollection<UserDto>> GetAllAdminsAsync()
+        {
+            List<UserDto> librarians = new List<UserDto>();
+            foreach (var user in _userManager.Users)
+            {
+                if (await _userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    librarians.Add(_mapper.Map<UserDto>(user));
+                }
+            }
+            return librarians;
+        }
 
         public async Task<ICollection<UserDto>> GetAllLibrariansAsync()
         {
@@ -256,8 +318,25 @@ namespace Application.Services
             }
         }
 
-        public async Task<UserDto> GetCurrentUser(ClaimsPrincipal claims)
-            => _mapper.Map<UserDto>(await _userManager.GetUserAsync(claims));
+        public async Task<UserWithRoleDto> GetUserByClaimsAsync(ClaimsPrincipal claims)
+        {
+            var user = await _userManager.GetUserAsync(claims);
+            if (user == null)
+            {
+                return null;
+            }
+            var roles = await _userManager.GetRolesAsync(user);
+            var mappedUser = _mapper.Map<UserWithRoleDto>(user);
+            mappedUser.RoleName = roles[0];
+            return mappedUser;
+        }
+           
+
+        public async Task<bool> IsAdmin(int id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            return await _userManager.IsInRoleAsync(user, "Admin");
+        }
 
         public async Task<bool> IsLibrarian(int id)
         {
