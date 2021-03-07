@@ -15,31 +15,24 @@ namespace Infrastructure.Repositories
         public BorrowingRepository(LibraryDbContext dbContext) : base(dbContext)
         {
         }
-        public async Task<ICollection<Borrowing>> GetAllBorrowingsAsync() { 
-            return await DbSet
-                .Include(b => b.User)
-                .Include(b => b.Book)
-                    .ThenInclude(book => book.Category)
-                .Include(b => b.Book)
-                    .ThenInclude(book => book.Publisher)
-                .Include(b => b.Book)
-                    .ThenInclude(book => book.Authors)
-                        .ThenInclude(ab => ab.Author)
-                .ToListAsync(); 
-        }
-        public async Task<ICollection<Borrowing>> GetAllNotReturnedBorrowingsAsync()
+        public async Task<ICollection<Borrowing>> GetAllBorrowingsAsync(int? pageNumber, int? pageSize, bool onlyNotReturned)
         {
-            return await DbSet
-                .Include(b => b.User)
-                .Include(b => b.Book)
-                    .ThenInclude(book => book.Category)
-                .Include(b => b.Book)
-                    .ThenInclude(book => book.Publisher)
-                .Include(b => b.Book)
-                    .ThenInclude(book => book.Authors)
-                        .ThenInclude(ab => ab.Author)
-                .Where(b => !b.ReturnedByUser.HasValue)
-                .ToListAsync();
+            var borrowings = DbSet
+               .Include(b => b.User)
+               .Include(b => b.Book)
+                   .ThenInclude(book => book.Category)
+               .Include(b => b.Book)
+                   .ThenInclude(book => book.Publisher)
+               .Include(b => b.Book)
+                   .ThenInclude(book => book.Authors)
+                       .ThenInclude(ab => ab.Author);
+
+            var result = onlyNotReturned
+                    ? borrowings.Where(b => !b.ReturnedByUser.HasValue)
+                    : borrowings;
+            return (pageNumber.HasValue && pageSize.HasValue)
+                ? await result.Skip(pageNumber.Value * pageSize.Value).Take(pageSize.Value).ToListAsync()
+                : await result.ToListAsync();
         }
         public async Task<Borrowing> GetBorrowingByIdAsync(int id)
         {
@@ -55,9 +48,9 @@ namespace Infrastructure.Repositories
                 .Where(b => b.Id == id)
                 .SingleOrDefaultAsync();
         }
-        public async Task<ICollection<Borrowing>> GetAllUserBorrowingsAsync(int userId)
+        public async Task<ICollection<Borrowing>> GetAllUserBorrowingsAsync(int userId, int? pageNumber, int? pageSize, bool onlyNotReturned)
         {
-            return await DbSet
+            var borrowings = DbSet
                 .Include(b => b.Book)
                     .ThenInclude(book => book.Category)
                 .Include(b => b.Book)
@@ -65,22 +58,15 @@ namespace Infrastructure.Repositories
                 .Include(b => b.Book)
                     .ThenInclude(book => book.Authors)
                         .ThenInclude(ab => ab.Author)
-                .Where(b => b.UserId == userId)
-                .ToListAsync();
-        }
+                .Where(b => b.UserId == userId);
 
-        public async Task<ICollection<Borrowing>> GetAllUserNotReturnedBorrowingsAsync(int userId)
-        {
-            return await DbSet
-                .Include(b => b.Book)
-                    .ThenInclude(book => book.Category)
-                .Include(b => b.Book)
-                    .ThenInclude(book => book.Publisher)
-                .Include(b => b.Book)
-                    .ThenInclude(book => book.Authors)
-                        .ThenInclude(ab => ab.Author)
-                .Where(b => b.UserId == userId && !b.ReturnedByUser.HasValue)
-                .ToListAsync();
+            var result = onlyNotReturned
+                ? borrowings.Where(b => !b.ReturnedByUser.HasValue)
+                : borrowings;
+
+            return (pageNumber.HasValue && pageSize.HasValue)
+                ? await result.Skip(pageNumber.Value * pageSize.Value).Take(pageSize.Value).ToListAsync()
+                : await result.ToListAsync();
         }
     }
 }

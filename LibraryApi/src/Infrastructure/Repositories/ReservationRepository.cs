@@ -16,32 +16,24 @@ namespace Infrastructure.Repositories
         public ReservationRepository(LibraryDbContext dbContext) : base(dbContext)
         {
         }
-        public async Task<ICollection<Reservation>> GetAllReservationsAsync()
+        public async Task<ICollection<Reservation>> GetAllReservationsAsync(int? pageNumber, int? pageSize, bool onlyAwaiting)
         {
-            return await DbSet
+            var reservations = DbSet
                 .Include(r => r.Book)
                     .ThenInclude(book => book.Category)
                 .Include(r => r.Book)
                     .ThenInclude(book => book.Publisher)
                 .Include(r => r.Book)
                     .ThenInclude(book => book.Authors)
-                        .ThenInclude(ab => ab.Author)
-                .Where(r => r.ReservationStatus == StatusEnum.Awaiting)
-                .ToListAsync();
-        }
-        public async Task<ICollection<Reservation>> GetAllAwaitingReservationsAsync()
-        {
-            return await DbSet
-                .Include(r => r.Book)
-                    .ThenInclude(book => book.Category)
-                .Include(r => r.Book)
-                    .ThenInclude(book => book.Publisher)
-                .Include(r => r.Book)
-                    .ThenInclude(book => book.Authors)
-                        .ThenInclude(ab => ab.Author)
-                .Where(r => r.ReservationStatus == StatusEnum.Awaiting)
-                .ToListAsync();
+                        .ThenInclude(ab => ab.Author);
 
+            var result = onlyAwaiting
+                ? reservations.Where(r => r.ReservationStatus == StatusEnum.Awaiting)
+                : reservations;
+
+            return (pageNumber.HasValue && pageSize.HasValue)
+                ? await result.Skip(pageNumber.Value * pageSize.Value).ToListAsync()
+                : await result.ToListAsync();
         }
         public async Task<Reservation> GetReservationByIdAsync(int id)
         {
@@ -56,9 +48,9 @@ namespace Infrastructure.Repositories
                 .Where(b => b.Id == id)
                 .FirstOrDefaultAsync();
         }
-        public async Task<ICollection<Reservation>> GetAllUserReservationsAsync(int userId)
+        public async Task<ICollection<Reservation>> GetAllUserReservationsAsync(int userId, int? pageNumber, int? pageSize, bool onlyAwaiting)
         {
-            return await DbSet
+            var reservations = DbSet
                 .Include(b => b.Book)
                     .ThenInclude(book => book.Category)
                 .Include(b => b.Book)
@@ -66,22 +58,15 @@ namespace Infrastructure.Repositories
                 .Include(b => b.Book)
                     .ThenInclude(book => book.Authors)
                         .ThenInclude(ab => ab.Author)
-                .Where(b => b.UserId == userId)
-                .ToListAsync();
-        }
+                .Where(b => b.UserId == userId);
 
-        public async Task<ICollection<Reservation>> GetAllUserAwaitingReservationsAsync(int userId)
-        {
-            return await DbSet
-                .Include(b => b.Book)
-                    .ThenInclude(book => book.Category)
-                .Include(b => b.Book)
-                    .ThenInclude(book => book.Publisher)
-                .Include(b => b.Book)
-                    .ThenInclude(book => book.Authors)
-                        .ThenInclude(ab => ab.Author)
-                .Where(b => b.UserId == userId && b.ReservationStatus == StatusEnum.Awaiting)
-                .ToListAsync();
+            var result = onlyAwaiting
+                ? reservations.Where(r => r.ReservationStatus == StatusEnum.Awaiting)
+                : reservations;
+
+            return (pageNumber.HasValue && pageSize.HasValue)
+                ? await result.Skip(pageNumber.Value * pageSize.Value).ToListAsync()
+                : await result.ToListAsync();
         }
     }
 }

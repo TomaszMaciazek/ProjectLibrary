@@ -1,4 +1,5 @@
-﻿using Application.Dto;
+﻿using Application.Args;
+using Application.Dto;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels.AddVM;
@@ -26,9 +27,21 @@ namespace Api.Controllers
         [HttpGet]
         [Description("Get all reservations")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<ActionResult<IEnumerable<ReservationDto>>> Get()
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> Get(
+            [FromQuery] bool onlyAwaiting = false,
+            [FromQuery] int? pageNumber = null,
+            [FromQuery] int? pageSize = null
+            )
         {
-            var reservations = await _reservationService.GetAllReservationsAsync();
+
+            var args = new ReservationsPaginationArgs
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                OnlyAwaiting = onlyAwaiting
+            };
+
+            var reservations = await _reservationService.GetAllReservationsAsync(args);
             return Ok(reservations);
         }
 
@@ -40,31 +53,24 @@ namespace Api.Controllers
             var reservation = await _reservationService.GetReservationByIdAsync(id);
             return Ok(reservation);
         }
-
-        [HttpGet("awaitingReservations")]
-        [Description("Get all awaiting reservations")]
-        [Authorize(Roles = "Admin, Librarian")]
-        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetAwaitingReservations()
-        {
-            var reservations = await _reservationService.GetAllAwaitingReservationsAsync();
-            return Ok(reservations);
-        }
         
-        [HttpGet("user/{userId}")]
+        [HttpGet("user/{id}")]
         [Description("Get all user reservations")]
         [Authorize(Roles = "Admin, Librarian, Reader")]
-        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserReservations([FromRoute] int userId)
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserReservations(
+            [FromRoute] int id,
+            [FromQuery] bool onlyAwaiting = false,
+            [FromQuery] int? pageNumber = null,
+            [FromQuery] int? pageSize = null
+            )
         {
-            var reservations = await _reservationService.GetAllUserReservationsAsync(userId);
-            return Ok(reservations);
-        }
-        
-        [HttpGet("awaitingReservations/{userId}")]
-        [Description("Get all user awaiting reservations")]
-        [Authorize(Roles = "Admin, Librarian")]
-        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserAwaitingReservations([FromRoute] int userId)
-        {
-            var reservations = await _reservationService.GetAllUserAwaitingReservationsAsync(userId);
+            var args = new ReservationsPaginationArgs
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                OnlyAwaiting = onlyAwaiting
+            };
+            var reservations = await _reservationService.GetAllUserReservationsAsync(id, args);
             return Ok(reservations);
         }
         

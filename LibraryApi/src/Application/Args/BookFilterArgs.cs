@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Application.Args
+﻿namespace Application.Args
 {
-    public class BookFilterArgs
+    public class BookFilterArgs : BasePaginationArgs
     {
         public string FilterTitleString { get; set; }
         public string [] Authors { get; set; }
         public string[] Categories { get; set; }
         public string[] Publishers { get; set; }
         public bool OnlyAvailable { get; set; }
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
     }
 }

@@ -13,8 +13,8 @@ namespace Infrastructure.Interfaces
             string[] categories,
             string[] publishers,
             bool onlyAvailable,
-            int pageNumber,
-            int pageSize
+            int? pageNumber,
+            int? pageSize
             );
         Task<Book> GetBookByIdAsync(int id);
     }

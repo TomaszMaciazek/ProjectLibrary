@@ -1,4 +1,5 @@
-﻿using Application.Dto;
+﻿using Application.Args;
+using Application.Dto;
 using Application.ViewModels.AddVM;
 using Application.ViewModels.UpdateVM;
 using System.Collections.Generic;
@@ -11,10 +12,8 @@ namespace Application.Interfaces
         Task<ReservationDto> AddReservationAsync(AddReservationVM reservationDto);
         Task<bool> UpdateReservationAsync(UpdateReservationVM model);
         Task<bool> DeleteReservationAsync(int id);
-        Task<ICollection<ReservationDto>> GetAllAwaitingReservationsAsync();
-        Task<ICollection<ReservationDto>> GetAllReservationsAsync();
-        Task<ICollection<ReservationDto>> GetAllUserAwaitingReservationsAsync(int userId);
-        Task<ICollection<ReservationDto>> GetAllUserReservationsAsync(int userId);
+        Task<ICollection<ReservationDto>> GetAllReservationsAsync(ReservationsPaginationArgs args);
+        Task<ICollection<ReservationDto>> GetAllUserReservationsAsync(int userId, ReservationsPaginationArgs args);
         Task<ReservationDto> GetReservationByIdAsync(int id);
     }
 }

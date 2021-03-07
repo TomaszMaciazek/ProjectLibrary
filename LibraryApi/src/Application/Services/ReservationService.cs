@@ -1,4 +1,5 @@
-﻿using Application.Dto;
+﻿using Application.Args;
+using Application.Dto;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels.AddVM;
@@ -24,23 +25,13 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<ICollection<ReservationDto>> GetAllReservationsAsync()
+        public async Task<ICollection<ReservationDto>> GetAllReservationsAsync(ReservationsPaginationArgs args)
         {
             try
             {
-                return _mapper.Map<ICollection<ReservationDto>>(await _reservationRepository.GetAllReservationsAsync());
-            }
-            catch (Exception)
-            {
-                throw new GetOperationFailedException();
-            }
-        }
-
-        public async Task<ICollection<ReservationDto>> GetAllAwaitingReservationsAsync()
-        {
-            try
-            {
-                return _mapper.Map<ICollection<ReservationDto>>(await _reservationRepository.GetAllAwaitingReservationsAsync());
+                return _mapper.Map<ICollection<ReservationDto>>(
+                        await _reservationRepository.GetAllReservationsAsync(args.PageNumber, args.PageSize, args.OnlyAwaiting)
+                    );
             }
             catch (Exception)
             {
@@ -114,23 +105,13 @@ namespace Application.Services
             }
         }
 
-        public async Task<ICollection<ReservationDto>> GetAllUserReservationsAsync(int userId)
+        public async Task<ICollection<ReservationDto>> GetAllUserReservationsAsync(int userId, ReservationsPaginationArgs args)
         {
             try
             {
-                return _mapper.Map<ICollection<ReservationDto>>(await _reservationRepository.GetAllUserReservationsAsync(userId));
-            }
-            catch (Exception)
-            {
-                throw new GetOperationFailedException();
-            }
-        }
-
-        public async Task<ICollection<ReservationDto>> GetAllUserAwaitingReservationsAsync(int userId)
-        {
-            try
-            {
-                return _mapper.Map<ICollection<ReservationDto>>(await _reservationRepository.GetAllUserAwaitingReservationsAsync(userId));
+                return _mapper.Map<ICollection<ReservationDto>>(
+                        await _reservationRepository.GetAllUserReservationsAsync(userId, args.PageNumber, args.PageSize, args.OnlyAwaiting)
+                    );
             }
             catch (Exception)
             {

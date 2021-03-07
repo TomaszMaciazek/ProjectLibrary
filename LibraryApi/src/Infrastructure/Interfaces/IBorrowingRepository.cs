@@ -7,10 +7,8 @@ namespace Infrastructure.Interfaces
 {
     public interface IBorrowingRepository : IRepository<Borrowing>
     {
-        Task<ICollection<Borrowing>> GetAllBorrowingsAsync();
-        Task<ICollection<Borrowing>> GetAllNotReturnedBorrowingsAsync();
-        Task<ICollection<Borrowing>> GetAllUserBorrowingsAsync(int userId);
-        Task<ICollection<Borrowing>> GetAllUserNotReturnedBorrowingsAsync(int userId);
+        Task<ICollection<Borrowing>> GetAllBorrowingsAsync(int? pageNumber, int? pageSize, bool onlyNotReturned);
+        Task<ICollection<Borrowing>> GetAllUserBorrowingsAsync(int userId, int? pageNumber, int? pageSize, bool onlyNotReturned);
         Task<Borrowing> GetBorrowingByIdAsync(int id);
     }
 }

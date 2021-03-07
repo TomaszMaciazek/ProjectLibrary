@@ -1,4 +1,5 @@
-﻿using Application.Dto;
+﻿using Application.Args;
+using Application.Dto;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels.AddVM;
@@ -27,11 +28,13 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<ICollection<BorrowingDto>> GetAllBorrowingsAsync()
+        public async Task<ICollection<BorrowingDto>> GetAllBorrowingsAsync(BorrowingsPaginationArgs args)
         {
             try
             {
-                return _mapper.Map<ICollection<BorrowingDto>>(await _borrowingRepository.GetAllBorrowingsAsync());
+                return _mapper.Map<ICollection<BorrowingDto>>(
+                        await _borrowingRepository.GetAllBorrowingsAsync(args.PageNumber, args.PageSize, args.OnlyNotReturned)
+                    );
             }
             catch (Exception)
             {
@@ -44,18 +47,6 @@ namespace Application.Services
             try
             {
                 return _mapper.Map<BorrowingDto>(await _borrowingRepository.GetBorrowingByIdAsync(id));
-            }
-            catch (Exception)
-            {
-                throw new GetOperationFailedException();
-            }
-        }
-
-        public async Task<ICollection<BorrowingDto>> GetAllNotReturnedBorrowingsAsync()
-        {
-            try
-            {
-                return _mapper.Map<ICollection<BorrowingDto>>(await _borrowingRepository.GetAllNotReturnedBorrowingsAsync());
             }
             catch (Exception)
             {
@@ -120,23 +111,14 @@ namespace Application.Services
             }
         }
 
-        public async Task<ICollection<BorrowingDto>> GetAllUserBorrowingsAsync(int userId)
+        public async Task<ICollection<BorrowingDto>> GetAllUserBorrowingsAsync(int userId, BorrowingsPaginationArgs args)
         {
             try
             {
-                return _mapper.Map<ICollection<BorrowingDto>>(await _borrowingRepository.GetAllUserBorrowingsAsync(userId));
-            }
-            catch (Exception)
-            {
-                throw new GetOperationFailedException();
-            }
-        }
-
-        public async Task<ICollection<BorrowingDto>> GetAllUserNotReturnedBorrowingsAsync(int userId)
-        {
-            try
-            {
-                return _mapper.Map<ICollection<BorrowingDto>>(await _borrowingRepository.GetAllUserNotReturnedBorrowingsAsync(userId));
+                return _mapper
+                    .Map<ICollection<BorrowingDto>>(
+                        await _borrowingRepository.GetAllUserBorrowingsAsync(userId, args.PageNumber, args.PageSize, args.OnlyNotReturned)
+                    );
             }
             catch (Exception)
             {

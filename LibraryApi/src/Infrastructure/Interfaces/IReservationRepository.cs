@@ -7,10 +7,8 @@ namespace Infrastructure.Interfaces
 {
     public interface IReservationRepository : IRepository<Reservation>
     {
-        Task<ICollection<Reservation>> GetAllAwaitingReservationsAsync();
-        Task<ICollection<Reservation>> GetAllReservationsAsync();
-        Task<ICollection<Reservation>> GetAllUserAwaitingReservationsAsync(int userId);
-        Task<ICollection<Reservation>> GetAllUserReservationsAsync(int userId);
+        Task<ICollection<Reservation>> GetAllReservationsAsync(int? pageNumber, int? pageSize, bool onlyAwaiting);
+        Task<ICollection<Reservation>> GetAllUserReservationsAsync(int userId, int? pageNumber, int? pageSize, bool onlyAwaiting);
         Task<Reservation> GetReservationByIdAsync(int id);
     }
 }

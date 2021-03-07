@@ -1,4 +1,5 @@
-﻿using Application.Dto;
+﻿using Application.Args;
+using Application.Dto;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels.AddVM;
@@ -26,9 +27,39 @@ namespace Api.Controllers
         [HttpGet]
         [Description("Get all borrowings")]
         [Authorize(Roles = "Admin, Librarian")]
-        public async Task<ActionResult<IEnumerable<BorrowingDto>>> Get()
+        public async Task<ActionResult<IEnumerable<BorrowingDto>>> Get(
+            [FromQuery] int? pageNumber = null,
+            [FromQuery] int? pageSize = null,
+            [FromQuery] bool onlyNotReturned = false
+            )
         {
-            var borrowings = await _borrowingService.GetAllBorrowingsAsync();
+            var args = new BorrowingsPaginationArgs
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                OnlyNotReturned = onlyNotReturned
+            };
+            var borrowings = await _borrowingService.GetAllBorrowingsAsync(args);
+            return Ok(borrowings);
+        }
+
+        [HttpGet("reader/{id}")]
+        [Description("Get all reader borrowings")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public async Task<ActionResult<IEnumerable<BorrowingDto>>> GetUserBorrowings(
+            [FromRoute] int id,
+            [FromQuery] int? pageNumber = null,
+            [FromQuery] int? pageSize = null,
+            [FromQuery] bool onlyNotReturned = false
+            )
+        {
+            var args = new BorrowingsPaginationArgs
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                OnlyNotReturned = onlyNotReturned
+            };
+            var borrowings = await _borrowingService.GetAllUserBorrowingsAsync(id, args);
             return Ok(borrowings);
         }
 

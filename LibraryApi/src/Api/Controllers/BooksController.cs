@@ -32,9 +32,9 @@ namespace Api.Controllers
             [FromQuery(Name = "author")] string [] authors,
             [FromQuery(Name = "category")] string [] categories,
             [FromQuery(Name = "publisher")] string[] publishers,
-            [FromQuery] bool onlyAvailable,
-            [FromQuery] int pageNumber,
-            [FromQuery] int pageSize
+            [FromQuery] bool onlyAvailable = false,
+            [FromQuery] int? pageNumber = null,
+            [FromQuery] int? pageSize = null
             )
         {
             var args = new BookFilterArgs
